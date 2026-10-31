@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../api/api_client.dart';
 import '../models/models.dart';
+import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_header.dart';
 import '../widgets/cards.dart';
@@ -25,6 +26,8 @@ class _TripFinderScreenState extends State<TripFinderScreen> {
   List<dynamic>? _trips;
   bool _loading = false;
   Object? _error;
+  int _page = 0;
+  static const _perPage = 10;
 
   static const _days = [
     'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
@@ -107,6 +110,12 @@ class _TripFinderScreenState extends State<TripFinderScreen> {
         setState(() {
           _trips = res['trips'] as List? ?? [];
           _loading = false;
+          _page = 0;
+        });
+        Storage.setJson(Storage.tripFinderState, {
+          'line': _lineController.text.trim(),
+          'origin': _origin,
+          'destination': _destination,
         });
       } else {
         throw ApiException('${res is Map ? res['error'] : 'Errore'}');
@@ -201,8 +210,44 @@ class _TripFinderScreenState extends State<TripFinderScreen> {
                     child: Text('Nessuna corsa trovata per questa tratta.',
                         style: TextStyle(color: context.muted)),
                   )
-                else if (_trips != null)
-                  for (final t in _trips!) _TripCard(trip: t),
+                else if (_trips != null) ...[
+                  for (final t in _trips!
+                      .skip(_page * _perPage)
+                      .take(_perPage))
+                    _TripCard(trip: t),
+                  if (_trips!.length > _perPage)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          OutlinedButton(
+                            onPressed: _page > 0
+                                ? () => setState(() => _page--)
+                                : null,
+                            child: const Text('←'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12),
+                            child: Text(
+                              '${_page + 1} / ${((_trips!.length - 1) ~/ _perPage) + 1} · ${_trips!.length} corse',
+                              style: TextStyle(
+                                  color: context.muted,
+                                  fontSize: 13),
+                            ),
+                          ),
+                          OutlinedButton(
+                            onPressed: (_page + 1) * _perPage <
+                                    _trips!.length
+                                ? () => setState(() => _page++)
+                                : null,
+                            child: const Text('→'),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
               ]),
             ),
           ),
@@ -243,6 +288,19 @@ class _TripCard extends StatelessWidget {
     final start = '${trip['start'] ?? trip['departure_time'] ?? trip['departure'] ?? ''}';
     final end = '${trip['end'] ?? trip['arrival_time'] ?? trip['arrival'] ?? ''}';
     final headsign = '${trip['headsign'] ?? trip['trip_headsign'] ?? ''}';
+    bool moving = false;
+    if (start.length >= 5 && end.length >= 5) {
+      final now = DateTime.now();
+      final nowMin = now.hour * 60 + now.minute;
+      int? toMin(String t) {
+        final p = t.split(':');
+        return p.length < 2 ? null : int.tryParse(p[0])! * 60 + int.tryParse(p[1])!;
+      }
+      final a = toMin(start), b = toMin(end);
+      if (a != null && b != null) {
+        moving = nowMin >= a - 30 && nowMin <= b + 30;
+      }
+    }
 
     return AppCard(
       margin: const EdgeInsets.only(bottom: 10),
@@ -271,6 +329,19 @@ class _TripCard extends StatelessWidget {
                   Text(headsign,
                       style:
                           TextStyle(color: context.muted, fontSize: 13)),
+                if (moving)
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: context.green.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text('In movimento secondo orario',
+                        style: TextStyle(
+                            color: context.green, fontSize: 11)),
+                  ),
               ],
             ),
           ),

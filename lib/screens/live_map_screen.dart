@@ -23,6 +23,9 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
   List<Vehicle> _vehicles = [];
   Object? _error;
   String _service = 'automobilistico';
+  String _query = '';
+  DateTime? _lastUpdate;
+  bool _showNd = true;
   Timer? _timer;
   Vehicle? _selected;
   bool _firstLoad = true;
@@ -33,7 +36,7 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
   void initState() {
     super.initState();
     _load();
-    _timer = Timer.periodic(const Duration(seconds: 30), (_) => _load());
+    _timer = Timer.periodic(const Duration(seconds: 60), (_) => _load());
   }
 
   @override
@@ -56,6 +59,7 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
         _vehicles = list;
         _error = null;
         _firstLoad = false;
+        _lastUpdate = DateTime.now();
       });
     } catch (e) {
       if (mounted) {
@@ -69,7 +73,19 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final located = _vehicles.where((v) => v.lat != null && v.lon != null);
+    var located =
+        _vehicles.where((v) => v.lat != null && v.lon != null);
+    if (!_showNd) {
+      located = located.where((v) => v.shortName.isNotEmpty);
+    }
+    if (_query.isNotEmpty) {
+      final q = _query.toLowerCase().trim();
+      located = located.where((v) =>
+          v.shortName.toLowerCase().contains(q) ||
+          v.tripId.toLowerCase().contains(q) ||
+          v.routeId.toLowerCase().contains(q) ||
+          v.headsign.toLowerCase().contains(q));
+    }
     final rt = located.where((v) => v.isRealtime).length;
 
     return Scaffold(
@@ -78,11 +94,26 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
           AppHeader(
             showBack: true,
             title: 'Bus in servizio',
-            subtitle: '${located.length} veicoli · $rt in tempo reale',
+            subtitle:
+                '${located.length} bus sulla mappa · $rt realtime${_lastUpdate == null ? '' : ' · dati ${_lastUpdate!.hour.toString().padLeft(2, '0')}:${_lastUpdate!.minute.toString().padLeft(2, '0')}'}',
             actions: [
+              _HeaderIconButton(
+                  icon: Icons.filter_list,
+                  onTap: () => setState(() => _showNd = !_showNd)),
               _HeaderIconButton(
                   icon: Icons.refresh, onTap: _load),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: TextField(
+              decoration: const InputDecoration(
+                hintText: 'Cerca: 5E, 21, …',
+                prefixIcon: Icon(Icons.search),
+                isDense: true,
+              ),
+              onChanged: (v) => setState(() => _query = v),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),

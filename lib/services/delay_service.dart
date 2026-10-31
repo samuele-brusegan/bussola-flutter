@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/models.dart';
+import 'passages_service.dart';
 
 /// Local delay history, port of the web app's `delayHistory.js`
 /// (localStorage → SharedPreferences).
@@ -58,6 +59,31 @@ class DelayService {
         );
       }
     }
+  }
+
+  /// Records delays from realtime passages — port of
+  /// `recordPassageDelays` (only `real:true`, delay ≥ 1 min).
+  static Future<void> recordPassages(
+      List<Passage> passages, String stopId, String stopName) async {
+    for (final p in passages) {
+      if (!p.real) continue;
+      final delay = parseDelayMinutes(p.time);
+      if (delay == null || delay < 1) continue;
+      await record(
+        line: p.rawLine,
+        destination: p.destination,
+        stop: stopId,
+        stopName: stopName,
+        delaySeconds: delay,
+      );
+    }
+  }
+
+  /// Delay in minutes from an ACTV time string ("4'", "12'").
+  static int? parseDelayMinutes(String? timeStr) {
+    if (timeStr == null || timeStr == 'departure') return null;
+    final m = RegExp(r'^(\d+)').firstMatch(timeStr);
+    return m == null ? null : int.parse(m.group(1)!);
   }
 
   static Future<void> clear() async {

@@ -18,6 +18,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   final _message = TextEditingController();
   final _name = TextEditingController();
   final _email = TextEditingController();
+  final _website = TextEditingController(); // honeypot
   String _category = '';
   String _priority = 'normal';
   bool _sending = false;
@@ -43,6 +44,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         'message': _message.text.trim(),
         'name': _name.text.trim(),
         'email': _email.text.trim(),
+        'website': _website.text,
       });
       if (!mounted) return;
       if (res is Map && res['success'] == true) {
@@ -172,6 +174,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               validator: (v) => (v == null || v.trim().length < 10)
                   ? 'Scrivi almeno 10 caratteri'
                   : null,
+            ),
+            // Honeypot invisibile (stesso campo `website` della web app)
+            Offstage(
+              offstage: true,
+              child: TextFormField(
+                controller: _website,
+                decoration:
+                    const InputDecoration(labelText: 'Website'),
+              ),
             ),
             const SizedBox(height: 12),
             TextFormField(

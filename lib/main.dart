@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/api_client.dart';
+import 'screens/credits_screen.dart';
 import 'screens/delay_stats_screen.dart';
 import 'screens/feedback_screen.dart';
+import 'screens/home_alt_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/line_schedule_screen.dart';
 import 'screens/lines_map_screen.dart';
@@ -11,11 +15,14 @@ import 'screens/live_map_screen.dart';
 import 'screens/privacy_screen.dart';
 import 'screens/route_finder_screen.dart';
 import 'screens/stops_screen.dart';
+import 'services/notifications_service.dart';
 import 'theme/app_theme.dart';
+import 'widgets/cookie_banner.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ApiClient.init();
+  unawaited(NotificationsService.init());
   final themeMode = await _loadThemeMode();
   runApp(BussolaApp(themeMode: themeMode));
 }
@@ -63,7 +70,9 @@ class BussolaAppState extends State<BussolaApp> {
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: _mode,
-      home: const MainShell(),
+      home: const CookieBanner(
+        child: OfflineIndicator(child: MainShell()),
+      ),
     );
   }
 }
@@ -132,6 +141,10 @@ class MainShellState extends State<MainShell> {
                   color: ctx.green),
               item(Icons.privacy_tip_outlined, 'Privacy e dati',
                   const PrivacyScreen()),
+              item(Icons.info_outline, 'Crediti',
+                  const CreditsScreen()),
+              item(Icons.home_outlined, 'Home alternativa',
+                  const HomeAltScreen()),
               const SizedBox(height: 8),
             ],
           ),

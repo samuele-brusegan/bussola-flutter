@@ -20,6 +20,8 @@ class _LinesMapScreenState extends State<LinesMapScreen> {
   List<LineShape>? _lines;
   Object? _error;
   String? _selected;
+  String _service = 'automobilistico';
+  bool _showStops = true;
 
   @override
   void initState() {
@@ -34,8 +36,9 @@ class _LinesMapScreenState extends State<LinesMapScreen> {
       _selected = line;
     });
     try {
-      final res = await ApiClient.get(
-          '/api/lines-shapes', line == null ? null : {'line': line});
+      final q = <String, String>{'service': _service};
+      if (line != null) q['line'] = line;
+      final res = await ApiClient.get('/api/lines-shapes', q);
       if (!mounted) return;
       setState(() => _lines = [
             for (final l in (res as List)) LineShape.fromJson(l)
@@ -50,10 +53,11 @@ class _LinesMapScreenState extends State<LinesMapScreen> {
     return Scaffold(
       body: Column(
         children: [
-          const AppHeader(
+          AppHeader(
             showBack: true,
             title: 'Mappa linee',
-            subtitle: 'Percorsi delle linee ACTV',
+            subtitle:
+                '${_lines?.length ?? 0} percorsi sulla mappa',
           ),
           Expanded(
             child: _error != null
@@ -87,6 +91,29 @@ class _LinesMapScreenState extends State<LinesMapScreen> {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             children: [
+              for (final (v, l) in [
+                ('automobilistico', 'Autobus'),
+                ('navigation', 'Vaporetti'),
+              ])
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ChoiceChip(
+                    label: Text(l),
+                    selected: _service == v,
+                    onSelected: (_) {
+                      _service = v;
+                      _load(line: _selected);
+                    },
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: FilterChip(
+                  label: const Text('Mostra le fermate'),
+                  selected: _showStops,
+                  onSelected: (v) => setState(() => _showStops = v),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: ChoiceChip(
@@ -148,7 +175,7 @@ class _LinesMapScreenState extends State<LinesMapScreen> {
                       ),
                 ],
               ),
-              MarkerLayer(
+              if (_showStops) MarkerLayer(
                 markers: [
                   for (final l in lines)
                     for (final s in l.path)

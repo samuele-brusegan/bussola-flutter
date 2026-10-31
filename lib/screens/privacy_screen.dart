@@ -69,9 +69,32 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                     children: [
                       const SectionTitle('Dati locali'),
                       Text(
-                        'L\'app memorizza sul dispositivo: fermate preferite, '
-                        'tema, storico ritardi e impostazioni.',
-                        style: TextStyle(color: context.muted),
+                        'L\'app memorizza sul dispositivo: tema '
+                        '(theme), consenso cookie (cookie_consent_accepted), '
+                        'fermate preferite (favorite_stops), fermate recenti '
+                        '(recent_stops), tragitti (favorite_routes, route_*), '
+                        'storico ritardi (delay_history), fermate monitorate '
+                        '(monitored_stops) e impostazioni.',
+                        style: TextStyle(color: context.muted, fontSize: 13),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () async {
+                            final prefs = await SharedPreferences
+                                .getInstance();
+                            await prefs.remove('cookie_consent_accepted');
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                      content: Text(
+                                          'Consenso cookie revocato')));
+                            }
+                          },
+                          child:
+                              const Text('Revoca consenso cookie'),
+                        ),
                       ),
                       const SizedBox(height: 14),
                       SizedBox(
@@ -85,6 +108,23 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                             side: const BorderSide(color: AppColors.red),
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SectionTitle('Terze parti'),
+                      Text(
+                        'Mappe e geocoding: OpenStreetMap e Nominatim.\n'
+                        'Dati trasporto: backend ACTV '
+                        '(oraritemporeale.actv.it) e feed GTFS/GTFS-RT.\n'
+                        'I feedback inviati arrivano al server API '
+                        'configurato (nessun dato personale obbligatorio).',
+                        style: TextStyle(color: context.muted, fontSize: 13),
                       ),
                     ],
                   ),

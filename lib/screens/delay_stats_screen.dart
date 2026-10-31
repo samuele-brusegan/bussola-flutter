@@ -47,6 +47,20 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
     return stats;
   }
 
+  double _maxDelay() {
+    if (_history == null || _history!.isEmpty) return 0;
+    return _history!
+            .map((r) => (r['delay'] as num? ?? 0).toInt())
+            .reduce((a, b) => a > b ? a : b) /
+        60;
+  }
+
+  static Color _delayColor(double avgMin) => avgMin > 10
+      ? const Color(0xFFE30613)
+      : avgMin > 5
+          ? AppColors.orange
+          : const Color(0xFF009E61);
+
   @override
   Widget build(BuildContext context) {
     final stats = _history == null ? null : _stats();
@@ -94,6 +108,13 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                     children: [
                       Expanded(
                         child: _StatCard(
+                          label: 'Rilevamenti',
+                          value: '$totalRecords',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _StatCard(
                           label: 'Ritardo medio',
                           value: '${avgAll.toStringAsFixed(1)} min',
                         ),
@@ -101,41 +122,62 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: _StatCard(
-                          label: 'Osservazioni',
-                          value: '$totalRecords',
+                          label: 'Ritardo max',
+                          value: '${_maxDelay().toStringAsFixed(0)} min',
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  _QuickStats(stats: stats),
+                  const SizedBox(height: 16),
+                  const SectionTitle('Ritardi per ora'),
+                  _HourlyChart(history: _history!),
                   const SizedBox(height: 20),
                   const SectionTitle('Per linea'),
                   for (final s in stats)
                     AppCard(
                       margin: const EdgeInsets.only(bottom: 10),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          LineBadge(label: s.line),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Media ${s.avgDelay.toStringAsFixed(1)} min',
-                                  style: TextStyle(
-                                    color: context.ink,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                          Row(
+                            children: [
+                              LineBadge(label: s.line),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Media ${s.avgDelay.toStringAsFixed(1)} min',
+                                      style: TextStyle(
+                                        color: context.ink,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${s.count} osservazioni · max ${s.maxDelay} min',
+                                      style: TextStyle(
+                                          color: context.muted,
+                                          fontSize: 13),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  '${s.count} osservazioni · max ${s.maxDelay} min',
-                                  style: TextStyle(
-                                      color: context.muted, fontSize: 13),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          _DelayDot(avgMin: s.avgDelay),
+                          const SizedBox(height: 6),
+                          _DelayBar(
+                            fraction: s.avgDelay /
+                                stats
+                                    .map((x) => x.avgDelay)
+                                    .fold<double>(
+                                        0, (a, b) => a > b ? a : b)
+                                    .clamp(1, 999),
+                            color: _delayColor(s.avgDelay),
+                          ),
                         ],
                       ),
                     ),
@@ -143,8 +185,28 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                   Center(
                     child: TextButton.icon(
                       onPressed: () async {
-                        await DelayService.clear();
-                        _load();
+                        final ok = await showDialog<bool>(
+                          context: context,
+                          builder: (d) => AlertDialog(
+                            title: const Text('Cancella storico'),
+                            content: const Text(
+                                'Eliminare tutti i ritardi registrati?'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(d, false),
+                                  child: const Text('Annulla')),
+                              FilledButton(
+                                  onPressed: () =>
+                                      Navigator.pop(d, true),
+                                  child: const Text('Elimina')),
+                            ],
+                          ),
+                        );
+                        if (ok == true) {
+                          await DelayService.clear();
+                          _load();
+                        }
                       },
                       icon: const Icon(Icons.delete_outline),
                       label: const Text('Cancella storico'),
@@ -186,21 +248,124 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-class _DelayDot extends StatelessWidget {
-  final double avgMin;
-  const _DelayDot({required this.avgMin});
+class _DelayBar extends StatelessWidget {
+  final double fraction;
+  final Color color;
+  const _DelayBar({required this.fraction, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    final color = avgMin >= 10
-        ? AppColors.red
-        : avgMin >= 5
-            ? AppColors.orange
-            : context.green;
-    return Container(
-      width: 12,
-      height: 12,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: SizedBox(
+        height: 8,
+        child: Stack(
+          children: [
+            Container(color: context.surface2),
+            FractionallySizedBox(
+              widthFactor: fraction.clamp(0.02, 1.0),
+              child: Container(color: color),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Quick stats: worst line, best/worst hour (port of getOverallStats).
+class _QuickStats extends StatelessWidget {
+  final List<LineDelayStat> stats;
+  const _QuickStats({required this.stats});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SectionLabel('Linea peggiore'),
+                const SizedBox(height: 4),
+                Text(
+                  stats.isEmpty ? '-' : stats.first.line,
+                  style: TextStyle(
+                      color: context.ink,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 18),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Hourly delay histogram with threshold colors.
+class _HourlyChart extends StatelessWidget {
+  final List<Map<String, dynamic>> history;
+  const _HourlyChart({required this.history});
+
+  @override
+  Widget build(BuildContext context) {
+    final byHour = List<double>.filled(24, 0);
+    final counts = List<int>.filled(24, 0);
+    for (final r in history) {
+      final h = (r['hour'] as num? ??
+              (r['timestamp'] is num
+                  ? DateTime.fromMillisecondsSinceEpoch(
+                          (r['timestamp'] as num).toInt())
+                      .hour
+                  : 0))
+          .toInt();
+      if (h >= 0 && h < 24) {
+        byHour[h] += (r['delay'] as num? ?? 0).toInt();
+        counts[h]++;
+      }
+    }
+    final avgs = [
+      for (var i = 0; i < 24; i++)
+        counts[i] == 0 ? 0.0 : byHour[i] / counts[i] / 60
+    ];
+    final maxAvg = avgs.fold(0.0, (a, b) => a > b ? a : b);
+    return AppCard(
+      child: SizedBox(
+        height: 110,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            for (var i = 0; i < 24; i++)
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      height: maxAvg == 0
+                          ? 2
+                          : (80 * avgs[i] / maxAvg).clamp(2, 80),
+                      margin:
+                          const EdgeInsets.symmetric(horizontal: 1),
+                      decoration: BoxDecoration(
+                        color: counts[i] == 0
+                            ? context.border
+                            : _DelayStatsScreenState._delayColor(avgs[i]),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text('$i',
+                        style: TextStyle(
+                            color: context.muted, fontSize: 8)),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -24,6 +24,7 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
   String? _line;
   Object? _error;
   bool _loading = false;
+  String _search = '';
 
   static const _days = [
     'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
@@ -193,11 +194,31 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
           child: Text('Nessuna linea per questa data.',
               style: TextStyle(color: context.muted)));
     }
+    final entries = _search.isEmpty
+        ? _catalog!
+        : _catalog!
+            .where((e) =>
+                e.line.toLowerCase().contains(_search.toLowerCase()) ||
+                e.name.toLowerCase().contains(_search.toLowerCase()))
+            .toList();
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-      itemCount: _catalog!.length,
+      itemCount: entries.length + 1,
       itemBuilder: (context, i) {
-        final e = _catalog![i];
+        if (i == 0) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: TextField(
+              decoration: const InputDecoration(
+                hintText: 'Cerca per numero o destinazione…',
+                prefixIcon: Icon(Icons.search),
+                isDense: true,
+              ),
+              onChanged: (v) => setState(() => _search = v),
+            ),
+          );
+        }
+        final e = entries[i - 1];
         return AppCard(
           margin: const EdgeInsets.only(bottom: 8),
           padding:
