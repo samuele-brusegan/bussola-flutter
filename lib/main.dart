@@ -126,8 +126,8 @@ class MainShellState extends State<MainShell> {
         }
 
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: ListView(
+            shrinkWrap: true,
             children: [
               item(Icons.map_outlined, 'Mappa linee', const LinesMapScreen()),
               item(Icons.schedule, 'Orari delle linee',

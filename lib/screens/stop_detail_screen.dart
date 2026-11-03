@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 import '../api/api_client.dart';
 import '../services/actv_realtime.dart';
@@ -641,16 +640,8 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Html(
-                      data: html,
-                      style: {
-                        'body': Style(
-                          margin: Margins.zero,
-                          padding: HtmlPaddings.zero,
-                          color: context.ink,
-                          fontSize: FontSize(14),
-                        ),
-                      },
+                    child: Text.rich(
+                      TextSpan(children: htmlToSpans(html, context.ink)),
                     ),
                   ),
                 ],
@@ -906,4 +897,56 @@ class _NotificationPanelState extends State<_NotificationPanel> {
       ),
     );
   }
+}
+
+
+/// Minimal HTML → TextSpan renderer for the ACTV noticeboard
+/// (supports b/strong, i/em, br and entities).
+List<InlineSpan> htmlToSpans(String html, Color base) {
+  final spans = <InlineSpan>[];
+  final stack = <TextStyle>[TextStyle(color: base, fontSize: 14)];
+  final tokens = RegExp(r'<[^>]+>|[^<]+').allMatches(html);
+  for (final t in tokens) {
+    final tok = t.group(0)!;
+    if (tok.startsWith('<')) {
+      final tag = tok.toLowerCase().replaceAll(RegExp(r'[</>\s]'), '');
+      switch (tag) {
+        case 'b':
+        case 'strong':
+          stack.add(stack.last
+              .copyWith(fontWeight: FontWeight.w700));
+          break;
+        case 'i':
+        case 'em':
+          stack.add(stack.last
+              .copyWith(fontStyle: FontStyle.italic));
+          break;
+        case 'br':
+          spans.add(const TextSpan(text: '\n'));
+          break;
+        default:
+          if (tag.startsWith('/')) break;
+          if (stack.length > 1 &&
+              (tok.startsWith('</') || tag.endsWith('/'))) {
+            if (tok.startsWith('</')) stack.removeLast();
+          }
+          break;
+      }
+      if (tok.startsWith('</') && stack.length > 1) {
+        stack.removeLast();
+      }
+    } else {
+      spans.add(TextSpan(
+        text: tok
+            .replaceAll('&amp;', '&')
+            .replaceAll('&lt;', '<')
+            .replaceAll('&gt;', '>')
+            .replaceAll('&quot;', '"')
+            .replaceAll('&#39;', "'")
+            .replaceAll('&nbsp;', ' '),
+        style: stack.last,
+      ));
+    }
+  }
+  return spans;
 }
