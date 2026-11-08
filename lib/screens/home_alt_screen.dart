@@ -240,7 +240,7 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
                         color: Colors.white.withValues(alpha: 0.55)),
                   ),
                   child: const Text(
-                    'ACTV Live',
+                    'Bussolà',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,

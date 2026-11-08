@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
           slivers: [
             SliverToBoxAdapter(
               child: AppHeader(
-                brand: 'ACTV Live',
+                brand: 'Bussolà',
                 title: 'Il tuo viaggio,\nin tempo reale.',
                 subtitle: 'Orari, fermate e percorsi ACTV a Venezia',
                 actions: [

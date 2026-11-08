@@ -55,9 +55,11 @@ class RoutePoint {
         'service': service,
       };
 
-  /// `from`/`to` value for `/api/plan-route` (stop_id or "lat,lon").
+  /// `from`/`to` value for `/api/plan-route` (first stop id or "lat,lon").
+  /// La API non accetta l'id composto "a-b" dei gruppi: usa `ids[0]` come
+  /// la web app.
   String get apiValue =>
-      type == 'stop' && id != null ? '$id' : '$lat,$lng';
+      type == 'stop' && id != null ? id!.split('-').first : '$lat,$lng';
 }
 
 /// Bottom-sheet station selector — port of `/station-selector`:

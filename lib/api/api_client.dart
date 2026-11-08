@@ -10,14 +10,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiClient {
   ApiClient._();
 
-  static const String defaultBaseUrl = 'https://actv-live.test';
+  static const String defaultBaseUrl = 'https://actv-live.brusegan.it';
   static const String _prefKey = 'api_base_url';
 
   static String _baseUrl = defaultBaseUrl;
   static String get baseUrl => _baseUrl;
 
-  /// Trusts self-signed certificates in debug builds so the local
-  /// `actv-live.test` virtual host works.
+  /// Trusts self-signed certificates in debug builds so a local
+  /// development virtual host works.
   static final http.Client _client = _createClient();
 
   static http.Client _createClient() {

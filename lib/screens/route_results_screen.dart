@@ -55,7 +55,7 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
 
   String _apiValue(Map<String, dynamic> p) =>
       p['type'] == 'stop' && p['id'] != null
-          ? '${p['id']}'
+          ? '${p['id']}'.split('-').first
           : '${p['lat']},${p['lng']}';
 
   Future<List<PlannedRoute>?> _plan(
