@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../l10n/l10n_ext.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -46,7 +48,7 @@ void showQrDialog(BuildContext context, String url) {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Apri questa pagina sul web',
+              ctx.l10n.qrOpenOnWeb,
               style: TextStyle(
                 color: ctx.ink,
                 fontWeight: FontWeight.w800,
@@ -73,11 +75,11 @@ void showQrDialog(BuildContext context, String url) {
               onPressed: () {
                 Clipboard.setData(ClipboardData(text: fullUrl));
                 ScaffoldMessenger.of(ctx).showSnackBar(
-                  const SnackBar(content: Text('Link copiato')),
+                  SnackBar(content: Text(ctx.l10n.linkCopied)),
                 );
               },
               icon: const Icon(Icons.copy, size: 18),
-              label: const Text('Copia link'),
+              label: Text(ctx.l10n.copyLink),
             ),
           ],
         ),

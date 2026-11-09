@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../api/api_client.dart';
+import '../l10n/l10n_ext.dart';
 import '../services/actv_realtime.dart';
 import '../services/delay_service.dart';
 import '../services/line_colors.dart';
@@ -178,8 +179,8 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
           await NotificationsService.toggle();
       if (!enabled) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Permesso notifiche negato')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(context.l10n.notifDenied)));
         }
         return;
       }
@@ -211,7 +212,7 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Condividi questa fermata',
+              Text(ctx.l10n.shareStop,
                   style: TextStyle(
                       color: ctx.ink,
                       fontWeight: FontWeight.w800,
@@ -228,11 +229,11 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
                         Clipboard.setData(ClipboardData(text: full));
                         Navigator.pop(ctx);
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Link widget copiato')));
+                            SnackBar(
+                                content: Text(context.l10n.widgetLinkCopied)));
                       },
                       icon: const Icon(Icons.copy, size: 18),
-                      label: const Text('Copia URL widget'),
+                      label: Text(ctx.l10n.copyWidgetUrl),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -244,11 +245,11 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
                                 '<iframe src="$full" style="border:0;width:100%;max-width:400px;height:500px"></iframe>'));
                         Navigator.pop(ctx);
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Codice embed copiato')));
+                            SnackBar(
+                                content: Text(context.l10n.embedCopied)));
                       },
                       icon: const Icon(Icons.code, size: 18),
-                      label: const Text('Copia iframe'),
+                      label: Text(ctx.l10n.copyIframe),
                     ),
                   ),
                 ],
@@ -291,9 +292,9 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
     }
     if (!mounted) return;
     if (tripId == null || tripId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content:
-              Text('Impossibile identificare con certezza questa corsa.')));
+              Text(context.l10n.tripUnidentified)));
       return;
     }
     Navigator.push(
@@ -368,10 +369,10 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
                 child: _buildBoard(),
               ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
-                child: SectionTitle('Prossimi Passaggi'),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                child: SectionTitle(context.l10n.nextPassages),
               ),
             ),
             if (_error != null)
@@ -379,17 +380,14 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
                 child: Center(
                   child: Padding(
                     padding: EdgeInsets.all(24),
-                    child: Text(
-                      'Errore nel caricamento dei dati.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.red),
-                    ),
+                    child: _LoadErrorText(),
                   ),
                 ),
               )
             else if (_passages == null)
-              const SliverFillRemaining(
-                  child: LoadingView(message: 'Caricamento passaggi...'))
+              SliverFillRemaining(
+                  child: LoadingView(
+                      message: context.l10n.loadingPassages))
             else if (passages.isEmpty && navPassages.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
@@ -398,8 +396,8 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
                     padding: const EdgeInsets.all(24),
                     child: Text(
                       _strike
-                          ? 'Nessun passaggio in tempo reale (possibile sciopero). Vedi la bacheca.'
-                          : 'Nessun passaggio previsto.',
+                          ? context.l10n.noPassagesStrike
+                          : context.l10n.noPassagesScheduled,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: context.muted),
                     ),
@@ -422,7 +420,7 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                     child: Text(
-                      '⛴ Navigazione',
+                      context.l10n.navigationSection,
                       style: TextStyle(
                         color: context.ink,
                         fontSize: 17,
@@ -454,10 +452,10 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
                     style: OutlinedButton.styleFrom(
                       shape: const StadiumBorder(),
                     ),
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                      child: Text('Aggiorna'),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 0),
+                      child: Text(context.l10n.refresh),
                     ),
                   ),
                 ),
@@ -536,13 +534,7 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
   Widget _buildBoard() {
     final notes = <(String type, String content)>[];
     if (_strike) {
-      notes.add((
-        'strike',
-        '<strong>Possibile sciopero o servizio non monitorato.</strong><br>'
-            'I passaggi in tempo reale non sono disponibili: gli orari '
-            'mostrati sono quelli <em>previsti</em> e i bus potrebbero '
-            'non passare.'
-      ));
+      notes.add(('strike', context.l10n.boardStrikeHtml));
     }
     if (_noticeHtml != null && _noticeHtml!.isNotEmpty) {
       notes.add((
@@ -594,7 +586,7 @@ class _StopDetailScreenState extends State<StopDetailScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Bacheca',
+                  context.l10n.board,
                   style: TextStyle(
                       color: context.ink,
                       fontWeight: FontWeight.w700,
@@ -726,16 +718,19 @@ class _PassageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = passage;
     final isReal = p.real;
-    final timeDisplay = p.time == 'departure' ? 'Ora' : p.time;
+    final timeDisplay = p.time == 'departure' ? context.l10n.now : p.time;
 
     final progress = p.vehicleProgress;
     String? vehicleText;
     if (p.vehicleInfo != null) {
       vehicleText = progress?['boardingPassed'] == true
-          ? 'Il mezzo ha già superato questa fermata'
-          : PassagesService.vehicleLabel(p.vehicleDistanceM) +
+          ? context.l10n.vehiclePassed
+          : PassagesService.vehicleLabel(p.vehicleDistanceM,
+              detected: context.l10n.positionDetected,
+              at: context.l10n.atPreposition) +
               ((progress?['stopsToBoarding'] as int? ?? 0) > 0
-                  ? ' · ${progress?['stopsToBoarding']} fermat${progress?['stopsToBoarding'] == 1 ? 'a' : 'e'}'
+                  ? context.l10n.stopsToBoarding(
+                      progress?['stopsToBoarding'] as int)
                   : '');
     }
 
@@ -763,7 +758,7 @@ class _PassageCard extends StatelessWidget {
                   children: [
                     Text(
                       p.destination.isEmpty
-                          ? 'Destinazione ignota'
+                          ? context.l10n.unknownDestination
                           : p.destination,
                       style: TextStyle(
                         color: context.ink,
@@ -773,8 +768,10 @@ class _PassageCard extends StatelessWidget {
                     ),
                     Text(
                       navigation
-                          ? 'Navigazione'
-                          : 'Presso ${p.stop.isEmpty ? p.gtfsStopId ?? '' : p.stop}',
+                          ? context.l10n.navigationLabel
+                          : context.l10n.atStop(p.stop.isEmpty
+                              ? p.gtfsStopId ?? ''
+                              : p.stop),
                       style:
                           TextStyle(color: context.muted, fontSize: 13),
                     ),
@@ -863,13 +860,13 @@ class _NotificationPanelState extends State<_NotificationPanel> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Notifiche Ritardi',
+            Text(context.l10n.notifDelays,
                 style: TextStyle(
                     color: context.ink,
                     fontWeight: FontWeight.w800,
                     fontSize: 18)),
             const SizedBox(height: 14),
-            Text('Avvisa per ritardi superiori a:',
+            Text(context.l10n.notifThreshold,
                 style: TextStyle(color: context.ink)),
             const SizedBox(height: 10),
             Wrap(
@@ -888,8 +885,7 @@ class _NotificationPanelState extends State<_NotificationPanel> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Riceverai una notifica quando una linea che passa da questa '
-              'fermata ha un ritardo superiore alla soglia impostata.',
+              context.l10n.notifExplain,
               style: TextStyle(color: context.muted, fontSize: 13),
             ),
           ],
@@ -949,4 +945,18 @@ List<InlineSpan> htmlToSpans(String html, Color base) {
     }
   }
   return spans;
+}
+
+
+class _LoadErrorText extends StatelessWidget {
+  const _LoadErrorText();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      context.l10n.loadError,
+      textAlign: TextAlign.center,
+      style: const TextStyle(color: Colors.red),
+    );
+  }
 }

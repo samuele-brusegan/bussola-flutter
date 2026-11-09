@@ -12,6 +12,13 @@ flutter analyze
 flutter test
 flutter run -d linux        # debug locale
 flutter run -d chrome       # attenzione: CORS/cert self-signed bloccano le API
+
+# Android: esistono i flavor "store" e "fdroid" (quest'ultimo esclude
+# com.google.android.gms; geolocator usa LocationManager). Va sempre
+# specificato --flavor:
+flutter run -d android --flavor store --debug
+flutter build apk --release --flavor fdroid   # APK per F-Droid
+flutter build appbundle --release --flavor store
 ```
 
 ## Architettura
@@ -28,6 +35,11 @@ flutter run -d chrome       # attenzione: CORS/cert self-signed bloccano le API
   preferiti in SharedPreferences.
 - `lib/services/delay_service.dart` — storico ritardi locale (port di
   `delayHistory.js`).
+- `lib/l10n/` — localizzazione it/en via `flutter gen-l10n` (ARB
+  `app_it.arb` / `app_en.arb`, output in `app_localizations*.dart` generati).
+  Uso: `context.l10n.<chiave>` (extension in `l10n_ext.dart`). La lingua si
+  cambia da menu Altro → Lingua (SharedPreferences `app_locale`);
+  `localizedDay()` traduce i nomi dei giorni dell'API.
 - `lib/theme/app_theme.dart` — design tokens da `app-shell.css`
   (verde #008F5B, blu #0759B8, radius 18, Inter), chiaro/scuro.
 - `lib/widgets/` — `AppHeader` (gradiente verde con taglio diagonale),

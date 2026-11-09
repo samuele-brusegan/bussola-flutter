@@ -1,0 +1,569 @@
+{
+  "@@locale": "it",
+  "appTitle": "Bussolà",
+  "navHome": "Home",
+  "navStops": "Fermate",
+  "navRoutes": "Percorsi",
+  "navMore": "Altro",
+  "moreLinesMap": "Mappa linee",
+  "moreLineSchedules": "Orari delle linee",
+  "moreLiveVehicles": "Bus in servizio",
+  "moreDelayStats": "Statistiche ritardi",
+  "moreFeedback": "Invia feedback",
+  "moreLanguage": "Lingua",
+  "morePrivacy": "Privacy e dati",
+  "moreCredits": "Crediti",
+  "moreAltHome": "Home alternativa",
+  "languageTitle": "Lingua dell'app",
+  "languageSystem": "Predefinita di sistema",
+  "errorLoadData": "Impossibile caricare i dati",
+  "retry": "Riprova",
+  "qrOpenOnWeb": "Apri questa pagina sul web",
+  "linkCopied": "Link copiato",
+  "copyLink": "Copia link",
+  "cookieBannerText": "Utilizziamo i dati locali e i cookie del server per migliorare la tua esperienza. ",
+  "cookieLearnMore": "Scopri di più",
+  "cookieAccept": "Accetta",
+  "youAreOffline": "Sei offline",
+  "strikeTitle": "Sciopero",
+  "strikePossible": "Possibile sciopero in corso",
+  "strikeBody": "Il servizio in tempo reale non risponde su {count} fermate controllate: è probabile uno sciopero o un'interruzione del servizio. Gli orari previsti potrebbero non essere rispettati.",
+  "@strikeBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "strikeEmptyStops": "Fermate senza passaggi rilevati:",
+  "stopDefaultName": "Fermata {id}",
+  "@stopDefaultName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "gotIt": "Ho capito",
+  "mapStationLabel": "Stazione: ",
+  "mapDistance": "Distanza: {km} km",
+  "@mapDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "mapSeePassages": "Vedi passaggi ›",
+  "stopsMapTitle": "Mappa delle fermate",
+  "journeySection": "Il tuo ultimo viaggio",
+  "journeyResume": "Riprendi viaggio",
+  "modify": "Modifica",
+  "coachSkip": "Salta",
+  "coachDone": "Fine",
+  "coachNext": "Avanti",
+  "footerCredits": "Crediti e licenze",
+  "footerAppBy": "MIT License (2025–2026) · App di ",
+  "footerAnd": " e ",
+  "footerDevBy": "App sviluppata da ",
+  "footerDesignBy": "Grafica e design da ",
+  "footerUnofficial": "Progetto non ufficiale, non affiliato ad ACTV S.p.A. — dati mappe © OpenStreetMap contributors",
+  "footerUnofficialMultiline": "Progetto non ufficiale, non affiliato ad ACTV S.p.A.\nDati mappe © OpenStreetMap contributors",
+  "geoWaiting": "In attesa di geolocalizzazione…",
+  "geoFound": "Posizione trovata. Ecco le stazioni più vicine.",
+  "geoUnavailable": "Geolocalizzazione non disponibile",
+  "noNearbyStops": "Nessuna fermata trovata nelle vicinanze.",
+  "homeTitle": "Il tuo viaggio,\nin tempo reale.",
+  "homeSubtitle": "Orari, fermate e percorsi ACTV a Venezia",
+  "actvService": "Servizio ACTV",
+  "whereBus": "Dove passa il tuo bus?",
+  "searchStop": "Cerca una fermata",
+  "searchStopSub": "Passaggi in tempo reale per ogni fermata",
+  "searchTrip": "Cerca una corsa",
+  "yourStops": "Le tue fermate",
+  "favBadge": "★ Preferita",
+  "nearbyStops": "Fermate vicine",
+  "mapTitle": "Mappa",
+  "welcome": "Benvenuto",
+  "tourQ": "Vuoi fare un giro?",
+  "tourIntroBody": "Ti mostro in pochi secondi dove sono fermate, mappa, preferiti e tutte le altre funzioni dell'app.",
+  "startTour": "Inizia il tour",
+  "tourNearbyTitle": "Fermate vicine",
+  "tourNearbyBody": "Con la geolocalizzazione attiva, qui compaiono le fermate più vicine a te.",
+  "tourFavsTitle": "Le tue fermate",
+  "tourFavsBody": "Le fermate che salvi con la stella le ritrovi sempre qui.",
+  "tourMapTitle": "La mappa",
+  "tourMapBody": "Ogni pallino è una fermata: toccalo per aprire i passaggi in tempo reale.",
+  "tourMoreTitle": "Tutto il resto",
+  "tourMoreBody": "Da qui: percorsi con cambio, orari delle linee, statistiche sui ritardi e ricerca di una corsa. Le altre funzioni sono nel menu \"Altro\" in basso.",
+  "tourCtaTitle": "Cerca una fermata",
+  "tourCtaBody": "Tutto parte da qui: tocca il pulsante per aprire l'elenco delle fermate.",
+  "homeTitleAlt": "Il tuo viaggio, in tempo reale.",
+  "tourActionsTitle": "Le funzioni",
+  "tourActionsBody": "Percorsi con cambio, mappa live dei mezzi, orari, ricerca corsa, statistiche e rete di linee.",
+  "actRoutesSub": "Come arrivare",
+  "actLiveMap": "Mappa live",
+  "actLiveMapSub": "Mezzi in movimento",
+  "actSchedules": "Orari linee",
+  "actSchedulesSub": "Tabella oraria",
+  "actTripSearch": "Cerca corsa",
+  "actTripSearchSub": "Per linea o tripId",
+  "actDelays": "Ritardi",
+  "actDelaysSub": "Statistiche servizio",
+  "actNetwork": "Rete",
+  "actNetworkSub": "Tutte le linee",
+  "stopsAllTitle": "Tutte le\nStazioni",
+  "viewList": "Elenco",
+  "viewZones": "Per zona",
+  "searchStopHint": "Cerca stazione...",
+  "noStationFound": "Nessuna stazione trovata.",
+  "stopsListTitle": "Elenco Stazioni",
+  "navStopsTitle": "Fermate Navigazione",
+  "zoneTitle": "Zone · {zone}",
+  "@zoneTitle": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "zonesTitle": "Zone",
+  "notRealtime": "Servizio non in tempo reale (Server ACTV Down)",
+  "navLine": "Linea: ⛴ Navigazione",
+  "noLinesAvailable": "Nessuna linea disponibile",
+  "linesLabel": "Linee:",
+  "originTitle": "Da dove parti?",
+  "destinationTitle": "Dove vuoi andare?",
+  "cancel": "Annulla",
+  "done": "Fatto",
+  "searchStopOrAddress": "Cerca stazione o indirizzo...",
+  "recentStops": "Recenti",
+  "favStops": "Preferite",
+  "addresses": "Indirizzi",
+  "allStops": "Tutte le fermate",
+  "notifDenied": "Permesso notifiche negato",
+  "shareStop": "Condividi questa fermata",
+  "widgetLinkCopied": "Link widget copiato",
+  "copyWidgetUrl": "Copia URL widget",
+  "embedCopied": "Codice embed copiato",
+  "copyIframe": "Copia iframe",
+  "tripUnidentified": "Impossibile identificare con certezza questa corsa.",
+  "nextPassages": "Prossimi Passaggi",
+  "loadError": "Errore nel caricamento dei dati.",
+  "loadingPassages": "Caricamento passaggi...",
+  "noPassagesStrike": "Nessun passaggio in tempo reale (possibile sciopero). Vedi la bacheca.",
+  "noPassagesScheduled": "Nessun passaggio previsto.",
+  "navigationSection": "⛴ Navigazione",
+  "refresh": "Aggiorna",
+  "boardStrikeHtml": "<strong>Possibile sciopero o servizio non monitorato.</strong><br>I passaggi in tempo reale non sono disponibili: gli orari mostrati sono quelli <em>previsti</em> e i bus potrebbero non passare.",
+  "board": "Bacheca",
+  "now": "Ora",
+  "vehiclePassed": "Il mezzo ha già superato questa fermata",
+  "stopsToBoarding": " · {count, plural, =1{# fermata} other{# fermate}}",
+  "@stopsToBoarding": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unknownDestination": "Destinazione ignota",
+  "navigationLabel": "Navigazione",
+  "atStop": "Presso {stop}",
+  "@atStop": {
+    "placeholders": {
+      "stop": {
+        "type": "String"
+      }
+    }
+  },
+  "notifDelays": "Notifiche Ritardi",
+  "notifThreshold": "Avvisa per ritardi superiori a:",
+  "notifExplain": "Riceverai una notifica quando una linea che passa da questa fermata ha un ritardo superiore alla soglia impostata.",
+  "selectOriginDest": "Seleziona partenza e destinazione",
+  "findRouteTitle": "Trova\nPercorso",
+  "favRoutes": "Tragitti preferiti",
+  "departure": "Partenza",
+  "selectDeparture": "Seleziona partenza",
+  "destination": "Destinazione",
+  "selectDestination": "Seleziona destinazione",
+  "departureReturnOptions": "Opzioni di partenza e ritorno",
+  "selectDepartureDateTime": "Seleziona data e ora partenza",
+  "optimizeFor": "Ottimizza per",
+  "optTime": "tempo",
+  "optTransfers": "cambi",
+  "optWalking": "a piedi",
+  "returnTrip": "Ritorno",
+  "searchSolutions": "Ricerca soluzioni",
+  "travelSolutions": "Soluzioni di viaggio",
+  "outbound": "Andata",
+  "returnTab": "Ritorno",
+  "searchingRoutes": "Ricerca percorsi in corso…",
+  "noRouteFound": "Nessun percorso trovato per i parametri specificati",
+  "back": "Indietro",
+  "compareRoutes": "Confronta percorsi",
+  "compare": "Confronta",
+  "solutionN": "Soluzione {n}",
+  "@solutionN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "minFromNow": "({n} min da ora)",
+  "@minFromNow": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "walk": "Cammina",
+  "walkFor": "per {distance} m",
+  "@walkFor": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "stopsCount": " · {count, plural, =1{# fermata} other{# fermate}}",
+  "@stopsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transfersCount": "{count, plural, =0{Diretto} =1{# cambio} other{# cambi}}",
+  "@transfersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "details": "Dettagli",
+  "selectArrow": "Seleziona →",
+  "routeSaved": "Tragitto salvato",
+  "routeRemoved": "Tragitto rimosso dai preferiti",
+  "nearOriginHint": "Sei vicino al punto di partenza: parti da qui.",
+  "saved": "Salvato",
+  "saveRoute": "Salva tragitto",
+  "viewOnMap": "Visualizza sulla mappa",
+  "yourRoute": "Il tuo percorso",
+  "liveBusesTitle": "Bus in servizio",
+  "liveMapSubtitle": "{count} bus sulla mappa · {rt} realtime",
+  "@liveMapSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "rt": {
+        "type": "int"
+      }
+    }
+  },
+  "liveMapDataAt": " · dati {time}",
+  "@liveMapDataAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "searchVehicleHint": "Cerca: 5E, 21, …",
+  "autobus": "Autobus",
+  "vaporetti": "Vaporetti",
+  "vehicle": "Veicolo",
+  "lineN": "Linea {line}",
+  "@lineN": {
+    "placeholders": {
+      "line": {
+        "type": "String"
+      }
+    }
+  },
+  "realtimeLabel": "tempo reale",
+  "scheduledLabel": "programmato",
+  "trip": "Corsa",
+  "pathsOnMap": "{count, plural, =1{# percorso sulla mappa} other{# percorsi sulla mappa}}",
+  "@pathsOnMap": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "showStops": "Mostra le fermate",
+  "allChip": "Tutte",
+  "chooseLine": "Scegli una linea",
+  "lineDay": "Linea {line} · {day}",
+  "@lineDay": {
+    "placeholders": {
+      "line": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "linesChip": "Linee",
+  "noLinesForDate": "Nessuna linea per questa data.",
+  "searchLineHint": "Cerca per numero o destinazione…",
+  "tripsCount": "{count} corse",
+  "@tripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noActiveVariants": "Nessuna variante attiva.",
+  "variantInfo": "{origin} → {terminus} · {stops} fermate · {trips} corse",
+  "@variantInfo": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "terminus": {
+        "type": "String"
+      },
+      "stops": {
+        "type": "int"
+      },
+      "trips": {
+        "type": "int"
+      }
+    }
+  },
+  "noScheduleAvailable": "Nessun orario disponibile.",
+  "stopColumn": "Fermata",
+  "dayMonday": "lunedì",
+  "dayTuesday": "martedì",
+  "dayWednesday": "mercoledì",
+  "dayThursday": "giovedì",
+  "dayFriday": "venerdì",
+  "daySaturday": "sabato",
+  "daySunday": "domenica",
+  "tripFinderSubtitle": "Trova una corsa per linea e tratta",
+  "variantsAvailable": "direzioni disponibili",
+  "changeLine": "Cambia linea",
+  "allVehiclesShown": "Bus identificati e non identificati",
+  "identifiedVehiclesOnly": "Solo bus con linea riconosciuta",
+  "scheduleSummary": "{stops} fermate · {runs} corse",
+  "@scheduleSummary": {
+    "placeholders": {
+      "stops": {
+        "type": "int"
+      },
+      "runs": {
+        "type": "int"
+      }
+    }
+  },
+  "lineLabel": "Linea",
+  "lineHint": "es. 5E",
+  "search": "Cerca",
+  "noTripsFound": "Nessuna corsa trovata per questa tratta.",
+  "movingPerSchedule": "In movimento secondo orario",
+  "tripDetail": "Dettaglio corsa",
+  "directionTo": "DIREZIONE {headsign}",
+  "@directionTo": {
+    "placeholders": {
+      "headsign": {
+        "type": "String"
+      }
+    }
+  },
+  "stopsTitleCount": "Fermate ({count})",
+  "@stopsTitleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "delayLate": "· ritardo +{min} min",
+  "@delayLate": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "delayEarly": "· anticipo {min} min",
+  "@delayEarly": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "onTime": "· in orario",
+  "nextStopIn": "Prossima fermata: {name} tra {min} min",
+  "@nextStopIn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "nextStopNow": "Prossima fermata: {name} ora",
+  "@nextStopNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "realtimeActive": "Posizione in tempo reale attiva",
+  "passed": "TRASCORSO",
+  "delayStatsSubtitle": "Ritardi osservati su questo dispositivo",
+  "noDelaysRecorded": "Nessun ritardo registrato.\nI dati vengono raccolti mentre usi la mappa dei bus.",
+  "observations": "Rilevamenti",
+  "avgDelay": "Ritardo medio",
+  "maxDelay": "Ritardo max",
+  "delaysByHour": "Ritardi per ora",
+  "perLine": "Per linea",
+  "avgDelayMin": "Media {value} min",
+  "@avgDelayMin": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "clearHistory": "Cancella storico",
+  "clearHistoryConfirm": "Eliminare tutti i ritardi registrati?",
+  "delete": "Elimina",
+  "worstLine": "Linea peggiore",
+  "feedbackFailed": "Invio non riuscito: {error}",
+  "@feedbackFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "feedbackSubtitle": "Aiutaci a rendere Bussolà più utile.",
+  "feedbackThanks": "Grazie, il tuo feedback è stato inviato.",
+  "feedbackIntro": "Segnalaci un problema, proponi una funzione o raccontaci la tua esperienza. Non è necessario lasciare dati personali.",
+  "feedbackType": "Tipo di feedback *",
+  "fbFeature": "Nuova funzionalità",
+  "fbBug": "Bug o problema",
+  "fbImprovement": "Miglioramento",
+  "fbQuestion": "Domanda",
+  "fbOther": "Altro",
+  "selectCategory": "Seleziona una categoria",
+  "priority": "Priorità percepita",
+  "prioLow": "Bassa",
+  "prioNormal": "Normale",
+  "prioHigh": "Alta",
+  "subjectLabel": "Titolo",
+  "subjectHint": "In breve, di cosa si tratta?",
+  "messageLabel": "Messaggio *",
+  "messageHint": "Descrivi cosa è successo o cosa vorresti migliorare...",
+  "minChars": "Scrivi almeno 10 caratteri",
+  "nameOptional": "Nome (facoltativo)",
+  "emailOptional": "Email (facoltativa)",
+  "emailHint": "Per eventuale risposta",
+  "send": "Invia",
+  "localDataCleared": "Dati locali eliminati",
+  "apiServerUpdated": "Server API aggiornato",
+  "privacySubtitle": "Gestione dei dati memorizzati",
+  "localData": "Dati locali",
+  "localDataDesc": "L'app memorizza sul dispositivo: tema (theme), consenso cookie (cookie_consent_accepted), fermate preferite (favorite_stops), fermate recenti (recent_stops), tragitti (favorite_routes, route_*), storico ritardi (delay_history), fermate monitorate (monitored_stops) e impostazioni.",
+  "cookieConsentRevoked": "Consenso cookie revocato",
+  "revokeCookieConsent": "Revoca consenso cookie",
+  "deleteAllData": "Elimina tutti i dati",
+  "thirdParties": "Terze parti",
+  "thirdPartiesDesc": "Mappe e geocoding: OpenStreetMap e Nominatim.\nDati trasporto: backend ACTV (oraritemporeale.actv.it) e feed GTFS/GTFS-RT.\nI feedback inviati arrivano al server API configurato (nessun dato personale obbligatorio).",
+  "apiServerDesc": "Indirizzo del server che fornisce i dati ACTV.",
+  "baseUrl": "URL base",
+  "save": "Salva",
+  "creditsSubtitle": "Attribuzioni e licenze",
+  "mapsCredit": "Mappe",
+  "mapDataOdbL": "dati mappe © ODbL",
+  "geocodingNote": "geocoding indirizzi",
+  "transitData": "Dati trasporto",
+  "transitDataNote": "orari e posizioni dei mezzi",
+  "unofficialProject": "Progetto non ufficiale, non affiliato ad ACTV S.p.A.",
+  "openSourceLibs": "Librerie open source",
+  "project": "Progetto",
+  "creditsReleasedBy": "Rilasciato con licenza MIT.\n\nSviluppato da ",
+  "creditsDesignBy": "\nGrafica e design da ",
+  "openOnActvLive": "Apri su ACTV Live →",
+  "positionDetected": "Posizione rilevata",
+  "atPreposition": "a",
+  "feedbackTileSub": "Segnala un problema",
+  "lmFilters": "Filtri",
+  "lmAllLines": "Tutte le linee",
+  "lmSearchBy": "Cerca per",
+  "lmByLine": "Linea",
+  "lmByTrip": "Corsa",
+  "lmLinesLabel": "Linee",
+  "lmTripsLabel": "ID corse",
+  "lmQueryHelp": "Separa più linee con una virgola. Lascia vuoto per mostrarle tutte.",
+  "lmTripHelp": "Separa più ID corsa con una virgola. Lascia vuoto per mostrare tutte le linee.",
+  "lmReset": "Reset",
+  "lmApply": "Applica",
+  "lmStopsSuffix": "Fermate",
+  "lmLineTripsCount": "{count, plural, =1{# corsa} other{# corse}}",
+  "@lmLineTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "myPosition": "La mia posizione",
+  "refreshTooltip": "Aggiorna",
+  "mapSettings": "Impostazioni mappa",
+  "searchFields": "Campi di ricerca",
+  "searchFieldLine": "Linea",
+  "searchFieldDest": "Destinazione",
+  "searchFieldTrip": "Corsa (tripId)",
+  "noLineShown": "Veicoli senza linea",
+  "noLineShownSub": "mostra anche i mezzi non identificati",
+  "updatedAt": "aggiornato {time}",
+  "@updatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lsSearchLabel": "Cerca linea",
+  "loading": "Caricamento…",
+  "busService": "Servizio bus",
+  "findTrip": "Trova corsa",
+  "dateLabel": "Data",
+  "pickLineFirst": "Scegli prima una linea",
+  "pickOriginFirst": "Scegli prima la partenza",
+  "selectLeg": "Seleziona una tratta",
+  "tripsEmptyState": "Compila i campi qui sopra per vedere le corse disponibili.",
+  "goToPage": "Vai a pagina",
+  "goToTime": "Vai all'orario",
+  "go": "Vai",
+  "orWord": "oppure",
+  "openTrip": "Apri corsa",
+  "lineHelp": "Seleziona la linea da ispezionare",
+  "tripsResults": "Risultati",
+  "pageOf": "Pagina {page} di {total}",
+  "@pageOf": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
+}

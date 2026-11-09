@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../services/delay_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_header.dart';
@@ -76,11 +77,11 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: AppHeader(
               showBack: true,
-              title: 'Statistiche ritardi',
-              subtitle: 'Ritardi osservati su questo dispositivo',
+              title: context.l10n.moreDelayStats,
+              subtitle: context.l10n.delayStatsSubtitle,
             ),
           ),
           if (stats == null)
@@ -92,7 +93,7 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(32),
                   child: Text(
-                    'Nessun ritardo registrato.\nI dati vengono raccolti mentre usi la mappa dei bus.',
+                    context.l10n.noDelaysRecorded,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: context.muted),
                   ),
@@ -108,21 +109,21 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                     children: [
                       Expanded(
                         child: _StatCard(
-                          label: 'Rilevamenti',
+                          label: context.l10n.observations,
                           value: '$totalRecords',
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: _StatCard(
-                          label: 'Ritardo medio',
+                          label: context.l10n.avgDelay,
                           value: '${avgAll.toStringAsFixed(1)} min',
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: _StatCard(
-                          label: 'Ritardo max',
+                          label: context.l10n.maxDelay,
                           value: '${_maxDelay().toStringAsFixed(0)} min',
                         ),
                       ),
@@ -131,10 +132,10 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                   const SizedBox(height: 12),
                   _QuickStats(stats: stats),
                   const SizedBox(height: 16),
-                  const SectionTitle('Ritardi per ora'),
+                  SectionTitle(context.l10n.delaysByHour),
                   _HourlyChart(history: _history!),
                   const SizedBox(height: 20),
-                  const SectionTitle('Per linea'),
+                  SectionTitle(context.l10n.perLine),
                   for (final s in stats)
                     AppCard(
                       margin: const EdgeInsets.only(bottom: 10),
@@ -151,7 +152,7 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                                       CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Media ${s.avgDelay.toStringAsFixed(1)} min',
+                                      context.l10n.avgDelayMin(s.avgDelay.toStringAsFixed(1)),
                                       style: TextStyle(
                                         color: context.ink,
                                         fontWeight: FontWeight.w700,
@@ -188,18 +189,18 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                         final ok = await showDialog<bool>(
                           context: context,
                           builder: (d) => AlertDialog(
-                            title: const Text('Cancella storico'),
-                            content: const Text(
-                                'Eliminare tutti i ritardi registrati?'),
+                            title: Text(context.l10n.clearHistory),
+                            content: Text(context.l10n
+                                .clearHistoryConfirm),
                             actions: [
                               TextButton(
                                   onPressed: () =>
                                       Navigator.pop(d, false),
-                                  child: const Text('Annulla')),
+                                  child: Text(context.l10n.cancel)),
                               FilledButton(
                                   onPressed: () =>
                                       Navigator.pop(d, true),
-                                  child: const Text('Elimina')),
+                                  child: Text(context.l10n.delete)),
                             ],
                           ),
                         );
@@ -209,7 +210,7 @@ class _DelayStatsScreenState extends State<DelayStatsScreen> {
                         }
                       },
                       icon: const Icon(Icons.delete_outline),
-                      label: const Text('Cancella storico'),
+                      label: Text(context.l10n.clearHistory),
                     ),
                   ),
                 ]),
@@ -287,7 +288,7 @@ class _QuickStats extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionLabel('Linea peggiore'),
+                SectionLabel(context.l10n.worstLine),
                 const SizedBox(height: 4),
                 Text(
                   stats.isEmpty ? '-' : stats.first.line,

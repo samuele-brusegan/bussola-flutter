@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../services/line_colors.dart';
 import '../services/stops_service.dart';
 import '../theme/app_theme.dart';
@@ -53,9 +54,9 @@ class _StopsScreenState extends State<StopsScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: AppHeader(
-                showBack: true, title: 'Tutte le\nStazioni'),
+                showBack: true, title: context.l10n.stopsAllTitle),
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -71,8 +72,8 @@ class _StopsScreenState extends State<StopsScreen> {
                     child: Row(
                       children: [
                         for (final (v, label) in [
-                          ('list', 'Elenco'),
-                          ('zones', 'Per zona'),
+                          ('list', context.l10n.viewList),
+                          ('zones', context.l10n.viewZones),
                         ])
                           Expanded(
                             child: GestureDetector(
@@ -113,9 +114,9 @@ class _StopsScreenState extends State<StopsScreen> {
                   if (_view == 'list') ...[
                     const SizedBox(height: 10),
                     TextField(
-                      decoration: const InputDecoration(
-                        hintText: 'Cerca stazione...',
-                        prefixIcon: Icon(Icons.search),
+                      decoration: InputDecoration(
+                        hintText: context.l10n.searchStopHint,
+                        prefixIcon: const Icon(Icons.search),
                       ),
                       onChanged: (v) => setState(() => _query = v),
                     ),
@@ -137,7 +138,7 @@ class _StopsScreenState extends State<StopsScreen> {
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
-                  child: Text('Nessuna stazione trovata.',
+                  child: Text(context.l10n.noStationFound,
                       style: TextStyle(color: context.muted)),
                 ),
               )
@@ -145,15 +146,15 @@ class _StopsScreenState extends State<StopsScreen> {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
-                  child: const SectionTitle('Elenco Stazioni'),
+                  child: SectionTitle(context.l10n.stopsListTitle),
                 ),
               ),
               _listSliver(filtered ?? busGroups),
               if (navGroups.isNotEmpty && _query.isEmpty) ...[
-                const SliverToBoxAdapter(
+                SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(16, 12, 16, 10),
-                    child: SectionTitle('Fermate Navigazione'),
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+                    child: SectionTitle(context.l10n.navStopsTitle),
                   ),
                 ),
                 _listSliver(navGroups, navigation: true),
@@ -212,7 +213,7 @@ class _StopsScreenState extends State<StopsScreen> {
                       Icon(Icons.arrow_back, color: context.blue),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text('Zone · $_zone',
+                        child: Text(context.l10n.zoneTitle(_zone!),
                             style: TextStyle(
                                 color: context.ink,
                                 fontWeight: FontWeight.w700)),
@@ -242,9 +243,9 @@ class _StopsScreenState extends State<StopsScreen> {
         delegate: SliverChildBuilderDelegate(
           (context, i) {
             if (i == 0) {
-              return const Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: SectionTitle('Zone'),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: SectionTitle(context.l10n.zonesTitle),
               );
             }
             final k = keys[i - 1];
@@ -319,11 +320,11 @@ class _StationCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 if (!group.realtime)
-                  Text('Servizio non in tempo reale (Server ACTV Down)',
+                  Text(context.l10n.notRealtime,
                       style:
                           TextStyle(color: context.muted, fontSize: 12))
                 else if (group.service == 'navigation')
-                  Text('Linea: ⛴ Navigazione',
+                  Text(context.l10n.navLine,
                       style:
                           TextStyle(color: context.muted, fontSize: 13))
                 else
@@ -353,7 +354,7 @@ class _LineBadges extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (aliases.isEmpty) {
-      return Text('Nessuna linea disponibile',
+      return Text(context.l10n.noLinesAvailable,
           style: TextStyle(color: context.muted, fontSize: 13));
     }
     return Wrap(
@@ -361,7 +362,7 @@ class _LineBadges extends StatelessWidget {
       runSpacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Text('Linee:',
+        Text(context.l10n.linesLabel,
             style: TextStyle(color: context.muted, fontSize: 13)),
         for (final a in aliases)
           FutureBuilder<(Color, Color)>(

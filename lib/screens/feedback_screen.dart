@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../api/api_client.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_header.dart';
@@ -56,7 +57,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       if (mounted) {
         setState(() => _sending = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invio non riuscito: $e')),
+          SnackBar(content: Text(context.l10n.feedbackFailed('$e'))),
         );
       }
     }
@@ -67,12 +68,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: AppHeader(
               showBack: true,
               compact: true,
-              title: 'Invia feedback',
-              subtitle: 'Aiutaci a rendere Bussolà più utile.',
+              title: context.l10n.moreFeedback,
+              subtitle: context.l10n.feedbackSubtitle,
             ),
           ),
           SliverPadding(
@@ -93,7 +94,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           Icon(Icons.check_circle_outline, color: context.green, size: 48),
           const SizedBox(height: 12),
           Text(
-            'Grazie, il tuo feedback è stato inviato.',
+            context.l10n.feedbackThanks,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: context.ink,
@@ -114,39 +115,38 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Segnalaci un problema, proponi una funzione o raccontaci la '
-              'tua esperienza. Non è necessario lasciare dati personali.',
+              context.l10n.feedbackIntro,
               style: TextStyle(color: context.muted, fontSize: 13),
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               initialValue: _category.isEmpty ? null : _category,
               decoration:
-                  const InputDecoration(labelText: 'Tipo di feedback *'),
-              items: const [
+                  InputDecoration(labelText: context.l10n.feedbackType),
+              items: [
                 DropdownMenuItem(
-                    value: 'feature', child: Text('Nuova funzionalità')),
+                    value: 'feature', child: Text(context.l10n.fbFeature)),
                 DropdownMenuItem(
-                    value: 'bug', child: Text('Bug o problema')),
+                    value: 'bug', child: Text(context.l10n.fbBug)),
                 DropdownMenuItem(
-                    value: 'improvement', child: Text('Miglioramento')),
+                    value: 'improvement', child: Text(context.l10n.fbImprovement)),
                 DropdownMenuItem(
-                    value: 'question', child: Text('Domanda')),
-                DropdownMenuItem(value: 'other', child: Text('Altro')),
+                    value: 'question', child: Text(context.l10n.fbQuestion)),
+                DropdownMenuItem(value: 'other', child: Text(context.l10n.fbOther)),
               ],
               onChanged: (v) => _category = v ?? '',
               validator: (v) =>
-                  (v == null || v.isEmpty) ? 'Seleziona una categoria' : null,
+                  (v == null || v.isEmpty) ? context.l10n.selectCategory : null,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
               initialValue: _priority,
               decoration:
-                  const InputDecoration(labelText: 'Priorità percepita'),
-              items: const [
-                DropdownMenuItem(value: 'low', child: Text('Bassa')),
-                DropdownMenuItem(value: 'normal', child: Text('Normale')),
-                DropdownMenuItem(value: 'high', child: Text('Alta')),
+                  InputDecoration(labelText: context.l10n.priority),
+              items: [
+                DropdownMenuItem(value: 'low', child: Text(context.l10n.prioLow)),
+                DropdownMenuItem(value: 'normal', child: Text(context.l10n.prioNormal)),
+                DropdownMenuItem(value: 'high', child: Text(context.l10n.prioHigh)),
               ],
               onChanged: (v) => _priority = v ?? 'normal',
             ),
@@ -154,9 +154,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             TextFormField(
               controller: _subject,
               maxLength: 180,
-              decoration: const InputDecoration(
-                labelText: 'Titolo',
-                hintText: 'In breve, di cosa si tratta?',
+              decoration: InputDecoration(
+                labelText: context.l10n.subjectLabel,
+                hintText: context.l10n.subjectHint,
               ),
             ),
             const SizedBox(height: 12),
@@ -165,14 +165,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               minLines: 5,
               maxLines: 10,
               maxLength: 5000,
-              decoration: const InputDecoration(
-                labelText: 'Messaggio *',
-                hintText:
-                    'Descrivi cosa è successo o cosa vorresti migliorare...',
+              decoration: InputDecoration(
+                labelText: context.l10n.messageLabel,
+                hintText: context.l10n.messageHint,
                 alignLabelWithHint: true,
               ),
               validator: (v) => (v == null || v.trim().length < 10)
-                  ? 'Scrivi almeno 10 caratteri'
+                  ? context.l10n.minChars
                   : null,
             ),
             // Honeypot invisibile (stesso campo `website` della web app)
@@ -189,16 +188,16 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               controller: _name,
               maxLength: 120,
               decoration:
-                  const InputDecoration(labelText: 'Nome (facoltativo)'),
+                  InputDecoration(labelText: context.l10n.nameOptional),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _email,
               maxLength: 190,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email (facoltativa)',
-                hintText: 'Per eventuale risposta',
+              decoration: InputDecoration(
+                labelText: context.l10n.emailOptional,
+                hintText: context.l10n.emailHint,
               ),
             ),
             const SizedBox(height: 20),
@@ -212,7 +211,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                         height: 20,
                         child: CircularProgressIndicator(
                             strokeWidth: 2, color: Colors.white))
-                    : const Text('Invia'),
+                    : Text(context.l10n.send),
               ),
             ),
           ],

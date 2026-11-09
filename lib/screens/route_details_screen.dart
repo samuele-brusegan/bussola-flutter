@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../models/models.dart';
 import '../services/stops_service.dart';
 import '../services/storage_service.dart';
@@ -70,8 +71,8 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
       setState(() => _saved = now);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(now
-              ? 'Tragitto salvato'
-              : 'Tragitto rimosso dai preferiti')));
+              ? context.l10n.routeSaved
+              : context.l10n.routeRemoved)));
     }
   }
 
@@ -113,7 +114,7 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'Sei vicino al punto di partenza: parti da qui.',
+                            context.l10n.nearOriginHint,
                             style: TextStyle(color: context.ink),
                           ),
                         ),
@@ -130,7 +131,7 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
                         icon: Icon(
                             _saved ? Icons.star : Icons.star_border),
                         label: Text(
-                            _saved ? 'Salvato' : 'Salva tragitto'),
+                            _saved ? context.l10n.saved : context.l10n.saveRoute),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -138,7 +139,7 @@ class _RouteDetailsScreenState extends State<RouteDetailsScreen> {
                       child: FilledButton.icon(
                         onPressed: _showMap,
                         icon: const Icon(Icons.map_outlined),
-                        label: const Text('Visualizza sulla mappa'),
+                        label: Text(context.l10n.viewOnMap),
                       ),
                     ),
                   ],
@@ -198,7 +199,7 @@ class _RouteMapModal extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text('Il tuo percorso',
+                  child: Text(context.l10n.yourRoute,
                       style: TextStyle(
                           color: context.ink,
                           fontWeight: FontWeight.w800,

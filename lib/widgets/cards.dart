@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n_ext.dart';
+
 import '../theme/app_theme.dart';
 
 /// White rounded card matching `.card-base` / `.stop-card`.
@@ -130,7 +132,7 @@ class ErrorView extends StatelessWidget {
             Icon(Icons.cloud_off, size: 40, color: context.muted),
             const SizedBox(height: 12),
             Text(
-              'Impossibile caricare i dati',
+              context.l10n.errorLoadData,
               style: TextStyle(
                 color: context.ink,
                 fontWeight: FontWeight.w700,
@@ -148,7 +150,7 @@ class ErrorView extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Riprova'),
+                label: Text(context.l10n.retry),
               ),
             ],
           ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_header.dart';
 import '../widgets/cards.dart';
@@ -14,39 +15,39 @@ class CreditsScreen extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: AppHeader(
               showBack: true,
-              title: 'Crediti',
-              subtitle: 'Attribuzioni e licenze',
+              title: context.l10n.moreCredits,
+              subtitle: context.l10n.creditsSubtitle,
             ),
           ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _card(context, 'Mappe', [
+                _card(context, context.l10n.mapsCredit, [
                   _link(context, 'OpenStreetMap contributors',
                       'https://www.openstreetmap.org/copyright',
-                      'dati mappe © ODbL'),
+                      context.l10n.mapDataOdbL),
                   _link(context, 'Nominatim',
-                      'https://nominatim.org/', 'geocoding indirizzi'),
+                      'https://nominatim.org/', context.l10n.geocodingNote),
                 ]),
                 const SizedBox(height: 16),
-                _card(context, 'Dati trasporto', [
+                _card(context, context.l10n.transitData, [
                   _link(context, 'ACTV open data',
                       'https://actv.avmspa.it/',
-                      'orari e posizioni dei mezzi'),
+                      context.l10n.transitDataNote),
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
-                      'Progetto non ufficiale, non affiliato ad ACTV S.p.A.',
+                      context.l10n.unofficialProject,
                       style: TextStyle(color: context.muted, fontSize: 13),
                     ),
                   ),
                 ]),
                 const SizedBox(height: 16),
-                _card(context, 'Librerie open source', [
+                _card(context, context.l10n.openSourceLibs, [
                   _lib(context, 'Flutter', 'BSD-3-Clause'),
                   _lib(context, 'flutter_map', 'BSD-3-Clause'),
                   _lib(context, 'OpenStreetMap tiles', '© OSM contributors'),
@@ -58,14 +59,13 @@ class CreditsScreen extends StatelessWidget {
                   _lib(context, 'intl', 'BSD-3-Clause'),
                 ]),
                 const SizedBox(height: 16),
-                _card(context, 'Progetto', [
+                _card(context, context.l10n.project, [
                   Text.rich(
                     TextSpan(
                       style: TextStyle(color: context.muted, fontSize: 14),
                       children: [
-                        const TextSpan(
-                            text:
-                                'Rilasciato con licenza MIT.\n\nSviluppato da '),
+                        TextSpan(
+                            text: context.l10n.creditsReleasedBy),
                         WidgetSpan(
                           alignment: PlaceholderAlignment.baseline,
                           baseline: TextBaseline.alphabetic,
@@ -79,7 +79,7 @@ class CreditsScreen extends StatelessWidget {
                                         TextDecoration.underline)),
                           ),
                         ),
-                        const TextSpan(text: '\nGrafica e design da '),
+                        TextSpan(text: context.l10n.creditsDesignBy),
                         WidgetSpan(
                           alignment: PlaceholderAlignment.baseline,
                           baseline: TextBaseline.alphabetic,

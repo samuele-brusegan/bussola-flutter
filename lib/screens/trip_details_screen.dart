@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../api/api_client.dart';
+import '../l10n/l10n_ext.dart';
 import '../models/models.dart';
 import '../services/line_colors.dart';
 import '../theme/app_theme.dart';
@@ -155,8 +156,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
             child: AppHeader(
               showBack: true,
               title: headsign.isEmpty
-                  ? 'Dettaglio corsa'
-                  : 'DIREZIONE $headsign',
+                  ? context.l10n.tripDetail
+                  : context.l10n.directionTo(headsign),
               subtitle: _subtitle(),
               brand: line.isEmpty ? null : null,
               actions: [
@@ -197,7 +198,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   children: [
                     if (_vehicle != null)
                       _vehicleInfo(context, nextIdx),
-                    SectionTitle('Fermate (${_stops!.length})'),
+                    SectionTitle(context.l10n.stopsTitleCount(_stops!.length)),
                   ],
                 ),
               ),
@@ -230,10 +231,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     if (v == null) return widget.time ?? '';
     final delayMin = (v.delaySeconds / 60).round();
     final delayText = delayMin > 0
-        ? '· ritardo +$delayMin min'
+        ? context.l10n.delayLate(delayMin)
         : delayMin < 0
-            ? '· anticipo ${-delayMin} min'
-            : '· in orario';
+            ? context.l10n.delayEarly(-delayMin)
+            : context.l10n.onTime;
     return '${widget.time ?? ''} $delayText';
   }
 
@@ -247,8 +248,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               DateTime.now().minute * 60 +
               DateTime.now().second);
       final min = (sec / 60).round();
-      countdown =
-          'Prossima fermata: ${_stops![nextIdx].name}${min > 0 ? ' tra $min min' : ' ora'}';
+      countdown = min > 0
+          ? context.l10n.nextStopIn(_stops![nextIdx].name, min)
+          : context.l10n.nextStopNow(_stops![nextIdx].name);
     }
     return AppCard(
       margin: const EdgeInsets.only(bottom: 12),
@@ -260,7 +262,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           Expanded(
             child: Text(
               countdown.isEmpty
-                  ? 'Posizione in tempo reale attiva'
+                  ? context.l10n.realtimeActive
                   : countdown,
               style: TextStyle(
                   color: context.ink, fontWeight: FontWeight.w600),
@@ -442,7 +444,7 @@ class _StopRow extends StatelessWidget {
                   ),
                 ),
                 if (passed)
-                  Text('TRASCORSO',
+                  Text(context.l10n.passed,
                       style: TextStyle(
                           color: context.muted, fontSize: 8)),
               ],

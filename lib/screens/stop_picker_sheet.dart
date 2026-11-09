@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../l10n/l10n_ext.dart';
 import '../services/stops_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/cards.dart';
@@ -133,7 +134,7 @@ class _StationSelectorSheetState extends State<_StationSelectorSheet> {
         'limit': '5',
         'bounded': '1',
         'viewbox': '12.15,45.65,12.60,45.30',
-        'accept-language': 'it',
+        'accept-language': Localizations.localeOf(context).languageCode,
       });
       final res = await http.get(uri, headers: {
         'User-Agent': 'bussola-flutter (ACTV Live port)',
@@ -170,8 +171,8 @@ class _StationSelectorSheetState extends State<_StationSelectorSheet> {
   @override
   Widget build(BuildContext context) {
     final title = widget.type == 'origin'
-        ? 'Da dove parti?'
-        : 'Dove vuoi andare?';
+        ? context.l10n.originTitle
+        : context.l10n.destinationTitle;
     final groups = _groups;
     final filtered = groups == null
         ? <StopGroup>[]
@@ -212,12 +213,12 @@ class _StationSelectorSheetState extends State<_StationSelectorSheet> {
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Annulla'),
+                    child: Text(context.l10n.cancel),
                   ),
                   if (_selected != null)
                     TextButton(
                       onPressed: () => Navigator.pop(context, _selected),
-                      child: const Text('Fatto'),
+                      child: Text(context.l10n.done),
                     ),
                 ],
               ),
@@ -226,9 +227,9 @@ class _StationSelectorSheetState extends State<_StationSelectorSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextField(
                 autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Cerca stazione o indirizzo...',
-                  prefixIcon: Icon(Icons.search),
+                decoration: InputDecoration(
+                  hintText: context.l10n.searchStopOrAddress,
+                  prefixIcon: const Icon(Icons.search),
                 ),
                 onChanged: _onQuery,
               ),
@@ -243,26 +244,26 @@ class _StationSelectorSheetState extends State<_StationSelectorSheet> {
                           const EdgeInsets.fromLTRB(16, 0, 16, 24),
                       children: [
                         if (_query.isEmpty && _recent.isNotEmpty) ...[
-                          const _SheetLabel('Recenti'),
+                          _SheetLabel(context.l10n.recentStops),
                           for (final r in _recent)
                             _recentTile(r),
                         ],
                         if (favGroups != null &&
                             favGroups.isNotEmpty) ...[
-                          const _SheetLabel('Preferite'),
+                          _SheetLabel(context.l10n.favStops),
                           for (final g in favGroups)
                             _stopTile(g),
                         ],
                         if (_geocoded.isNotEmpty) ...[
-                          const _SheetLabel('Indirizzi'),
+                          _SheetLabel(context.l10n.addresses),
                           for (final a in _geocoded) _addressTile(a),
                         ],
-                        const _SheetLabel('Tutte le fermate'),
+                        _SheetLabel(context.l10n.allStops),
                         if (filtered.isEmpty)
                           Padding(
                             padding: const EdgeInsets.all(24),
                             child: Text(
-                                'Nessuna stazione trovata.',
+                                context.l10n.noStationFound,
                                 style:
                                     TextStyle(color: context.muted)),
                           )

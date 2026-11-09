@@ -1,0 +1,569 @@
+{
+  "@@locale": "en",
+  "appTitle": "Bussolà",
+  "navHome": "Home",
+  "navStops": "Stops",
+  "navRoutes": "Routes",
+  "navMore": "More",
+  "moreLinesMap": "Lines map",
+  "moreLineSchedules": "Line schedules",
+  "moreLiveVehicles": "Vehicles in service",
+  "moreDelayStats": "Delay statistics",
+  "moreFeedback": "Send feedback",
+  "moreLanguage": "Language",
+  "morePrivacy": "Privacy and data",
+  "moreCredits": "Credits",
+  "moreAltHome": "Alternative home",
+  "languageTitle": "App language",
+  "languageSystem": "System default",
+  "errorLoadData": "Unable to load data",
+  "retry": "Retry",
+  "qrOpenOnWeb": "Open this page on the web",
+  "linkCopied": "Link copied",
+  "copyLink": "Copy link",
+  "cookieBannerText": "We use local data and server cookies to improve your experience. ",
+  "cookieLearnMore": "Learn more",
+  "cookieAccept": "Accept",
+  "youAreOffline": "You are offline",
+  "strikeTitle": "Strike",
+  "strikePossible": "Possible strike in progress",
+  "strikeBody": "The real-time service is not responding on {count} checked stops: a strike or service disruption is likely. Scheduled times may not be respected.",
+  "@strikeBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "strikeEmptyStops": "Stops with no detected departures:",
+  "stopDefaultName": "Stop {id}",
+  "@stopDefaultName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "gotIt": "Got it",
+  "mapStationLabel": "Station: ",
+  "mapDistance": "Distance: {km} km",
+  "@mapDistance": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "mapSeePassages": "See departures ›",
+  "stopsMapTitle": "Stops map",
+  "journeySection": "Your last journey",
+  "journeyResume": "Resume journey",
+  "modify": "Edit",
+  "coachSkip": "Skip",
+  "coachDone": "Done",
+  "coachNext": "Next",
+  "footerCredits": "Credits and licenses",
+  "footerAppBy": "MIT License (2025–2026) · App by ",
+  "footerAnd": " and ",
+  "footerDevBy": "App developed by ",
+  "footerDesignBy": "Graphics and design by ",
+  "footerUnofficial": "Unofficial project, not affiliated with ACTV S.p.A. — map data © OpenStreetMap contributors",
+  "footerUnofficialMultiline": "Unofficial project, not affiliated with ACTV S.p.A.\nMap data © OpenStreetMap contributors",
+  "geoWaiting": "Waiting for geolocation…",
+  "geoFound": "Location found. Here are the nearest stops.",
+  "geoUnavailable": "Geolocation unavailable",
+  "noNearbyStops": "No stops found nearby.",
+  "homeTitle": "Your journey,\nin real time.",
+  "homeSubtitle": "ACTV times, stops and routes in Venice",
+  "actvService": "ACTV service",
+  "whereBus": "Where does your bus stop?",
+  "searchStop": "Find a stop",
+  "searchStopSub": "Real-time departures for every stop",
+  "searchTrip": "Find a trip",
+  "yourStops": "Your stops",
+  "favBadge": "★ Favorite",
+  "nearbyStops": "Nearby stops",
+  "mapTitle": "Map",
+  "welcome": "Welcome",
+  "tourQ": "Want a quick tour?",
+  "tourIntroBody": "I'll show you in a few seconds where the stops, map, favorites and all the other app features are.",
+  "startTour": "Start the tour",
+  "tourNearbyTitle": "Nearby stops",
+  "tourNearbyBody": "With geolocation enabled, the stops closest to you appear here.",
+  "tourFavsTitle": "Your stops",
+  "tourFavsBody": "The stops you save with the star always show up here.",
+  "tourMapTitle": "The map",
+  "tourMapBody": "Each dot is a stop: tap it to see real-time departures.",
+  "tourMoreTitle": "Everything else",
+  "tourMoreBody": "From here: routes with transfers, line schedules, delay statistics and trip search. The other features are in the \"More\" menu below.",
+  "tourCtaTitle": "Find a stop",
+  "tourCtaBody": "Everything starts here: tap the button to open the stop list.",
+  "homeTitleAlt": "Your journey, in real time.",
+  "tourActionsTitle": "The features",
+  "tourActionsBody": "Routes with transfers, live vehicle map, schedules, trip search, statistics and the line network.",
+  "actRoutesSub": "How to get there",
+  "actLiveMap": "Live map",
+  "actLiveMapSub": "Vehicles on the move",
+  "actSchedules": "Line schedules",
+  "actSchedulesSub": "Timetable",
+  "actTripSearch": "Find trip",
+  "actTripSearchSub": "By line or tripId",
+  "actDelays": "Delays",
+  "actDelaysSub": "Service statistics",
+  "actNetwork": "Network",
+  "actNetworkSub": "All lines",
+  "stopsAllTitle": "All\nStops",
+  "viewList": "List",
+  "viewZones": "By zone",
+  "searchStopHint": "Search stop...",
+  "noStationFound": "No stop found.",
+  "stopsListTitle": "Stop List",
+  "navStopsTitle": "Navigation Stops",
+  "zoneTitle": "Zone · {zone}",
+  "@zoneTitle": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "zonesTitle": "Zones",
+  "notRealtime": "Not a real-time service (ACTV Server Down)",
+  "navLine": "Line: ⛴ Navigation",
+  "noLinesAvailable": "No lines available",
+  "linesLabel": "Lines:",
+  "originTitle": "Where are you leaving from?",
+  "destinationTitle": "Where do you want to go?",
+  "cancel": "Cancel",
+  "done": "Done",
+  "searchStopOrAddress": "Search stop or address...",
+  "recentStops": "Recent",
+  "favStops": "Favorites",
+  "addresses": "Addresses",
+  "allStops": "All stops",
+  "notifDenied": "Notification permission denied",
+  "shareStop": "Share this stop",
+  "widgetLinkCopied": "Widget link copied",
+  "copyWidgetUrl": "Copy widget URL",
+  "embedCopied": "Embed code copied",
+  "copyIframe": "Copy iframe",
+  "tripUnidentified": "Unable to identify this trip with certainty.",
+  "nextPassages": "Upcoming Departures",
+  "loadError": "Error loading data.",
+  "loadingPassages": "Loading departures...",
+  "noPassagesStrike": "No real-time departures (possible strike). See the noticeboard.",
+  "noPassagesScheduled": "No scheduled departures.",
+  "navigationSection": "⛴ Navigation",
+  "refresh": "Refresh",
+  "boardStrikeHtml": "<strong>Possible strike or unmonitored service.</strong><br>Real-time departures are not available: the times shown are <em>scheduled</em> and buses may not run.",
+  "board": "Noticeboard",
+  "now": "Now",
+  "vehiclePassed": "The vehicle has already passed this stop",
+  "stopsToBoarding": " · {count, plural, =1{# stop} other{# stops}}",
+  "@stopsToBoarding": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unknownDestination": "Unknown destination",
+  "navigationLabel": "Navigation",
+  "atStop": "At {stop}",
+  "@atStop": {
+    "placeholders": {
+      "stop": {
+        "type": "String"
+      }
+    }
+  },
+  "notifDelays": "Delay Notifications",
+  "notifThreshold": "Notify for delays over:",
+  "notifExplain": "You will receive a notification when a line passing through this stop has a delay greater than the set threshold.",
+  "selectOriginDest": "Select departure and destination",
+  "findRouteTitle": "Find\nRoute",
+  "favRoutes": "Favorite routes",
+  "departure": "Departure",
+  "selectDeparture": "Select departure",
+  "destination": "Destination",
+  "selectDestination": "Select destination",
+  "departureReturnOptions": "Departure and return options",
+  "selectDepartureDateTime": "Select departure date and time",
+  "optimizeFor": "Optimize for",
+  "optTime": "time",
+  "optTransfers": "transfers",
+  "optWalking": "walking",
+  "returnTrip": "Return",
+  "searchSolutions": "Search routes",
+  "travelSolutions": "Travel options",
+  "outbound": "Outbound",
+  "returnTab": "Return",
+  "searchingRoutes": "Searching routes…",
+  "noRouteFound": "No route found for the specified parameters",
+  "back": "Back",
+  "compareRoutes": "Compare routes",
+  "compare": "Compare",
+  "solutionN": "Option {n}",
+  "@solutionN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "minFromNow": "({n} min from now)",
+  "@minFromNow": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "walk": "Walk",
+  "walkFor": "for {distance} m",
+  "@walkFor": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "stopsCount": " · {count, plural, =1{# stop} other{# stops}}",
+  "@stopsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transfersCount": "{count, plural, =0{Direct} =1{# transfer} other{# transfers}}",
+  "@transfersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "details": "Details",
+  "selectArrow": "Select →",
+  "routeSaved": "Route saved",
+  "routeRemoved": "Route removed from favorites",
+  "nearOriginHint": "You're near the departure point: start from here.",
+  "saved": "Saved",
+  "saveRoute": "Save route",
+  "viewOnMap": "View on map",
+  "yourRoute": "Your route",
+  "liveBusesTitle": "Buses in service",
+  "liveMapSubtitle": "{count} buses on the map · {rt} realtime",
+  "@liveMapSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "rt": {
+        "type": "int"
+      }
+    }
+  },
+  "liveMapDataAt": " · data {time}",
+  "@liveMapDataAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "searchVehicleHint": "Search: 5E, 21, …",
+  "autobus": "Buses",
+  "vaporetti": "Water buses",
+  "vehicle": "Vehicle",
+  "lineN": "Line {line}",
+  "@lineN": {
+    "placeholders": {
+      "line": {
+        "type": "String"
+      }
+    }
+  },
+  "realtimeLabel": "real time",
+  "scheduledLabel": "scheduled",
+  "trip": "Trip",
+  "pathsOnMap": "{count, plural, =1{# path on the map} other{# paths on the map}}",
+  "@pathsOnMap": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "showStops": "Show stops",
+  "allChip": "All",
+  "chooseLine": "Choose a line",
+  "lineDay": "Line {line} · {day}",
+  "@lineDay": {
+    "placeholders": {
+      "line": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "linesChip": "Lines",
+  "noLinesForDate": "No lines for this date.",
+  "searchLineHint": "Search by number or destination…",
+  "tripsCount": "{count, plural, =1{# trip} other{# trips}}",
+  "@tripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noActiveVariants": "No active variants.",
+  "variantInfo": "{origin} → {terminus} · {stops} stops · {trips} trips",
+  "@variantInfo": {
+    "placeholders": {
+      "origin": {
+        "type": "String"
+      },
+      "terminus": {
+        "type": "String"
+      },
+      "stops": {
+        "type": "int"
+      },
+      "trips": {
+        "type": "int"
+      }
+    }
+  },
+  "noScheduleAvailable": "No schedule available.",
+  "stopColumn": "Stop",
+  "dayMonday": "Monday",
+  "dayTuesday": "Tuesday",
+  "dayWednesday": "Wednesday",
+  "dayThursday": "Thursday",
+  "dayFriday": "Friday",
+  "daySaturday": "Saturday",
+  "daySunday": "Sunday",
+  "tripFinderSubtitle": "Find a trip by line and section",
+  "variantsAvailable": "directions available",
+  "changeLine": "Change line",
+  "allVehiclesShown": "Identified and unidentified buses",
+  "identifiedVehiclesOnly": "Only buses with a known line",
+  "scheduleSummary": "{stops} stops · {runs} trips",
+  "@scheduleSummary": {
+    "placeholders": {
+      "stops": {
+        "type": "int"
+      },
+      "runs": {
+        "type": "int"
+      }
+    }
+  },
+  "lineLabel": "Line",
+  "lineHint": "e.g. 5E",
+  "search": "Search",
+  "noTripsFound": "No trips found for this section.",
+  "movingPerSchedule": "Moving per schedule",
+  "tripDetail": "Trip details",
+  "directionTo": "TO {headsign}",
+  "@directionTo": {
+    "placeholders": {
+      "headsign": {
+        "type": "String"
+      }
+    }
+  },
+  "stopsTitleCount": "Stops ({count})",
+  "@stopsTitleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "delayLate": "· delay +{min} min",
+  "@delayLate": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "delayEarly": "· early {min} min",
+  "@delayEarly": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "onTime": "· on time",
+  "nextStopIn": "Next stop: {name} in {min} min",
+  "@nextStopIn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "nextStopNow": "Next stop: {name} now",
+  "@nextStopNow": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "realtimeActive": "Real-time position active",
+  "passed": "PASSED",
+  "delayStatsSubtitle": "Delays observed on this device",
+  "noDelaysRecorded": "No delays recorded.\nData is collected while you use the bus map.",
+  "observations": "Observations",
+  "avgDelay": "Average delay",
+  "maxDelay": "Max delay",
+  "delaysByHour": "Delays by hour",
+  "perLine": "By line",
+  "avgDelayMin": "Avg {value} min",
+  "@avgDelayMin": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "clearHistory": "Clear history",
+  "clearHistoryConfirm": "Delete all recorded delays?",
+  "delete": "Delete",
+  "worstLine": "Worst line",
+  "feedbackFailed": "Sending failed: {error}",
+  "@feedbackFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "feedbackSubtitle": "Help us make Bussolà more useful.",
+  "feedbackThanks": "Thank you, your feedback has been sent.",
+  "feedbackIntro": "Report a problem, suggest a feature or tell us about your experience. You don't need to leave personal data.",
+  "feedbackType": "Feedback type *",
+  "fbFeature": "New feature",
+  "fbBug": "Bug or problem",
+  "fbImprovement": "Improvement",
+  "fbQuestion": "Question",
+  "fbOther": "Other",
+  "selectCategory": "Select a category",
+  "priority": "Perceived priority",
+  "prioLow": "Low",
+  "prioNormal": "Normal",
+  "prioHigh": "High",
+  "subjectLabel": "Subject",
+  "subjectHint": "Briefly, what is it about?",
+  "messageLabel": "Message *",
+  "messageHint": "Describe what happened or what you'd like to improve...",
+  "minChars": "Write at least 10 characters",
+  "nameOptional": "Name (optional)",
+  "emailOptional": "Email (optional)",
+  "emailHint": "For a possible reply",
+  "send": "Send",
+  "localDataCleared": "Local data deleted",
+  "apiServerUpdated": "API server updated",
+  "privacySubtitle": "Manage stored data",
+  "localData": "Local data",
+  "localDataDesc": "The app stores on the device: theme (theme), cookie consent (cookie_consent_accepted), favorite stops (favorite_stops), recent stops (recent_stops), routes (favorite_routes, route_*), delay history (delay_history), monitored stops (monitored_stops) and settings.",
+  "cookieConsentRevoked": "Cookie consent revoked",
+  "revokeCookieConsent": "Revoke cookie consent",
+  "deleteAllData": "Delete all data",
+  "thirdParties": "Third parties",
+  "thirdPartiesDesc": "Maps and geocoding: OpenStreetMap and Nominatim.\nTransit data: ACTV backend (oraritemporeale.actv.it) and GTFS/GTFS-RT feeds.\nSubmitted feedback goes to the configured API server (no personal data required).",
+  "apiServerDesc": "Address of the server providing ACTV data.",
+  "baseUrl": "Base URL",
+  "save": "Save",
+  "creditsSubtitle": "Attributions and licenses",
+  "mapsCredit": "Maps",
+  "mapDataOdbL": "map data © ODbL",
+  "geocodingNote": "address geocoding",
+  "transitData": "Transit data",
+  "transitDataNote": "vehicle times and positions",
+  "unofficialProject": "Unofficial project, not affiliated with ACTV S.p.A.",
+  "openSourceLibs": "Open source libraries",
+  "project": "Project",
+  "creditsReleasedBy": "Released under the MIT license.\n\nDeveloped by ",
+  "creditsDesignBy": "\nGraphics and design by ",
+  "openOnActvLive": "Open in ACTV Live →",
+  "positionDetected": "Position detected",
+  "atPreposition": "at",
+  "feedbackTileSub": "Report a problem",
+  "lmFilters": "Filters",
+  "lmAllLines": "All lines",
+  "lmSearchBy": "Search by",
+  "lmByLine": "Line",
+  "lmByTrip": "Trip",
+  "lmLinesLabel": "Lines",
+  "lmTripsLabel": "Trip IDs",
+  "lmQueryHelp": "Separate multiple lines with a comma. Leave empty to show them all.",
+  "lmTripHelp": "Separate multiple trip IDs with a comma. Leave empty to show all lines.",
+  "lmReset": "Reset",
+  "lmApply": "Apply",
+  "lmStopsSuffix": "Stops",
+  "lmLineTripsCount": "{count, plural, =1{# trip} other{# trips}}",
+  "@lmLineTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "myPosition": "My position",
+  "refreshTooltip": "Refresh",
+  "mapSettings": "Map settings",
+  "searchFields": "Search fields",
+  "searchFieldLine": "Line",
+  "searchFieldDest": "Destination",
+  "searchFieldTrip": "Trip (tripId)",
+  "noLineShown": "Vehicles without line",
+  "noLineShownSub": "also show unidentified vehicles",
+  "updatedAt": "updated {time}",
+  "@updatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lsSearchLabel": "Search line",
+  "loading": "Loading…",
+  "busService": "Bus service",
+  "findTrip": "Find trip",
+  "dateLabel": "Date",
+  "pickLineFirst": "Pick a line first",
+  "pickOriginFirst": "Pick the origin first",
+  "selectLeg": "Select a section",
+  "tripsEmptyState": "Fill in the fields above to see the available trips.",
+  "goToPage": "Go to page",
+  "goToTime": "Go to time",
+  "go": "Go",
+  "orWord": "or",
+  "openTrip": "Open trip",
+  "lineHelp": "Select the line to inspect",
+  "tripsResults": "Results",
+  "pageOf": "Page {page} of {total}",
+  "@pageOf": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
+}

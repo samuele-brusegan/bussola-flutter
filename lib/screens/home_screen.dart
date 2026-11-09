@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../services/stops_service.dart';
 import '../services/storage_service.dart';
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<StopGroup> _nearby = [];
   Set<String> _favorites = {};
   LatLng? _userPos;
-  String _status = 'In attesa di geolocalizzazione...';
+  String _status = 'waiting';
   bool _located = false;
   bool _showTutorial = false;
   Map<String, dynamic>? _journeyOrigin;
@@ -75,30 +76,37 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _userPos = LatLng(pos.latitude, pos.longitude);
         _located = true;
-        _status = 'Posizione trovata. Ecco le stazioni più vicine.';
+        _status = 'found';
         if (_groups.isNotEmpty) {
           _nearby = StopsService.nearby(_groups, pos.latitude, pos.longitude);
         }
       });
     } else {
-      setState(() => _status = 'Geolocalizzazione non disponibile');
+      setState(() => _status = 'unavailable');
     }
   }
 
+  String _statusText(BuildContext context) => switch (_status) {
+        'found' => context.l10n.geoFound,
+        'unavailable' => context.l10n.geoUnavailable,
+        _ => context.l10n.geoWaiting,
+      };
+
   void _startTour() {
+    final l10n = context.l10n;
     final steps = <HomeTourStep>[
       if (_nearbyKey.currentContext != null)
-        HomeTourStep(_nearbyKey, 'Fermate vicine',
-            'Con la geolocalizzazione attiva, qui compaiono le fermate più vicine a te.'),
+        HomeTourStep(_nearbyKey, l10n.tourNearbyTitle,
+            l10n.tourNearbyBody),
       if (_favoritesKey.currentContext != null)
-        HomeTourStep(_favoritesKey, 'Le tue fermate',
-            'Le fermate che salvi con la stella le ritrovi sempre qui.'),
-      HomeTourStep(_mapKey, 'La mappa',
-          'Ogni pallino è una fermata: toccalo per aprire i passaggi in tempo reale.'),
-      HomeTourStep(_actionsKey, 'Tutto il resto',
-          'Da qui: percorsi con cambio, orari delle linee, statistiche sui ritardi e ricerca di una corsa. Le altre funzioni sono nel menu "Altro" in basso.'),
-      HomeTourStep(_ctaKey, 'Cerca una fermata',
-          'Tutto parte da qui: tocca il pulsante per aprire l\'elenco delle fermate.'),
+        HomeTourStep(_favoritesKey, l10n.tourFavsTitle,
+            l10n.tourFavsBody),
+      HomeTourStep(_mapKey, l10n.tourMapTitle,
+          l10n.tourMapBody),
+      HomeTourStep(_actionsKey, l10n.tourMoreTitle,
+          l10n.tourMoreBody),
+      HomeTourStep(_ctaKey, l10n.tourCtaTitle,
+          l10n.tourCtaBody),
     ];
     HomeTour.run(context, steps, onDone: _dismissTutorial);
   }
@@ -135,8 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverToBoxAdapter(
               child: AppHeader(
                 brand: 'Bussolà',
-                title: 'Il tuo viaggio,\nin tempo reale.',
-                subtitle: 'Orari, fermate e percorsi ACTV a Venezia',
+                title: context.l10n.homeTitle,
+                subtitle: context.l10n.homeSubtitle,
                 actions: [
                   ThemeToggleButton(
                     mode: BussolaApp.of(context).themeMode,
@@ -150,10 +158,10 @@ class _HomeScreenState extends State<HomeScreen> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   if (_showTutorial) _tutorialCard(),
-                  const SectionLabel('Servizio ACTV'),
+                  SectionLabel(context.l10n.actvService),
                   const SizedBox(height: 6),
                   Text(
-                    'Dove passa il tuo bus?',
+                    context.l10n.whereBus,
                     style: TextStyle(
                       color: context.ink,
                       fontSize: 22,
@@ -186,11 +194,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SectionTitle('Le tue fermate'),
+                          SectionTitle(context.l10n.yourStops),
                           for (final g in favGroups)
                             StopTile(
                               group: g,
-                              subtitle: '★ Preferita',
+                              subtitle: context.l10n.favBadge,
                               onTap: () => _openStop(g),
                             ),
                         ],
@@ -203,12 +211,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SectionTitle('Fermate vicine'),
+                        SectionTitle(context.l10n.nearbyStops),
                         if (_nearby.isEmpty)
                           Text(
                             _userPos == null
-                                ? _status
-                                : 'Nessuna fermata trovata nelle vicinanze.',
+                                ? _statusText(context)
+                                : context.l10n.noNearbyStops,
                             style: TextStyle(
                                 color: context.muted, fontSize: 14),
                           )
@@ -232,9 +240,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SectionTitle('Mappa'),
+                        SectionTitle(context.l10n.mapTitle),
                         HomeStatusBanner(
-                            text: _status, success: _located),
+                            text: _statusText(context), success: _located),
                         HomeMap(
                           groups: _groups,
                           nearby: _nearby,
@@ -267,10 +275,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionLabel('Benvenuto'),
+          SectionLabel(context.l10n.welcome),
           const SizedBox(height: 6),
           Text(
-            'Vuoi fare un giro?',
+            context.l10n.tourQ,
             style: TextStyle(
               color: context.ink,
               fontSize: 22,
@@ -279,8 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Ti mostro in pochi secondi dove sono fermate, mappa, preferiti '
-            'e tutte le altre funzioni dell\'app.',
+            context.l10n.tourIntroBody,
             style: TextStyle(color: context.muted, fontSize: 14),
           ),
           const SizedBox(height: 14),
@@ -293,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     shape: const StadiumBorder(),
                     minimumSize: const Size(0, 44),
                   ),
-                  child: const Text('Inizia il tour'),
+                  child: Text(context.l10n.startTour),
                 ),
               ),
               const SizedBox(width: 10),
@@ -304,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     shape: const StadiumBorder(),
                     minimumSize: const Size(0, 44),
                   ),
-                  child: const Text('Salta'),
+                  child: Text(context.l10n.coachSkip),
                 ),
               ),
             ],
@@ -345,7 +352,7 @@ class _PrimaryAction extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Cerca una fermata',
+                    context.l10n.searchStop,
                     style: TextStyle(
                       color: context.ink,
                       fontSize: 17,
@@ -353,7 +360,7 @@ class _PrimaryAction extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Passaggi in tempo reale per ogni fermata',
+                    context.l10n.searchStopSub,
                     style:
                         TextStyle(color: context.muted, fontSize: 13),
                   ),
@@ -368,46 +375,79 @@ class _PrimaryAction extends StatelessWidget {
   }
 }
 
-/// `.home-actions` — text-only pill buttons, 2 cols (1 ≤ 430px).
+/// `.home-actions` — compact icon tiles (icon + title + subtitle).
 class _ActionGrid extends StatelessWidget {
   void _push(BuildContext context, Widget screen) => Navigator.push(
       context, MaterialPageRoute(builder: (_) => screen));
 
   @override
   Widget build(BuildContext context) {
-    final buttons = [
-      ('Cerca una fermata', () => MainShell.of(context).select(1), false),
-      ('Percorsi', () => MainShell.of(context).select(2), false),
-      ('Statistiche ritardi',
-          () => _push(context, const DelayStatsScreen()), false),
-      ('Orari delle linee',
-          () => _push(context, const LineScheduleScreen()), false),
-      ('Cerca una corsa',
-          () => _push(context, const TripFinderScreen()), false),
-      ('Invia feedback',
-          () => _push(context, const FeedbackScreen()), true),
+    final l10n = context.l10n;
+    final actions = <(IconData, String, String, VoidCallback, Color?)>[
+      (Icons.adjust, l10n.searchStop, l10n.searchStopSub,
+          () => MainShell.of(context).select(1), null),
+      (Icons.route_rounded, l10n.navRoutes, l10n.actRoutesSub,
+          () => MainShell.of(context).select(2), null),
+      (Icons.schedule, l10n.actSchedules, l10n.actSchedulesSub,
+          () => _push(context, const LineScheduleScreen()), null),
+      (Icons.directions_bus, l10n.actTripSearch, l10n.actTripSearchSub,
+          () => _push(context, const TripFinderScreen()), null),
+      (Icons.bar_chart, l10n.actDelays, l10n.actDelaysSub,
+          () => _push(context, const DelayStatsScreen()), null),
+      (Icons.edit_outlined, l10n.moreFeedback, l10n.feedbackTileSub,
+          () => _push(context, const FeedbackScreen()), context.green),
     ];
 
     return LayoutBuilder(builder: (context, constraints) {
-      final twoCols = constraints.maxWidth > 430;
+      final cols = constraints.maxWidth > 520 ? 3 : 2;
       return GridView.count(
-        crossAxisCount: twoCols ? 2 : 1,
+        crossAxisCount: cols,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        childAspectRatio: twoCols ? 4.2 : 5.2,
+        childAspectRatio: 2.1,
         children: [
-          for (final (label, action, isFeedback) in buttons)
-            FilledButton(
-              onPressed: action,
-              style: FilledButton.styleFrom(
-                backgroundColor:
-                    isFeedback ? context.greenDark : context.blue,
-                shape: const StadiumBorder(),
+          for (final (icon, label, sub, action, color) in actions)
+            AppCard(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              onTap: action,
+              child: Row(
+                children: [
+                  Icon(icon, color: color ?? context.ink, size: 24),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: color ?? context.ink,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                            height: 1.2,
+                          ),
+                        ),
+                        Text(
+                          sub,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: context.muted,
+                            fontSize: 11,
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              child: Text(label,
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
             ),
         ],
       );

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'actv_realtime.dart';
 import 'storage_service.dart';
 
@@ -125,6 +127,10 @@ class NotificationsService {
     _timer = null;
   }
 
+  static Future<String> _lang() async =>
+      (await SharedPreferences.getInstance()).getString('app_locale') ??
+      'it';
+
   static Future<void> _notify(String title, String body, String tag) async {
     if (!_pluginReady) return;
     try {
@@ -135,8 +141,8 @@ class NotificationsService {
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'delays',
-            'Ritardi ACTV',
-            channelDescription: 'Avvisi ritardi sulle fermate monitorate',
+            _channelName,
+            channelDescription: _channelDesc,
             importance: Importance.defaultImportance,
           ),
           iOS: DarwinNotificationDetails(),
@@ -146,6 +152,10 @@ class NotificationsService {
       );
     } catch (_) {}
   }
+
+  static const String _channelName = 'Ritardi ACTV';
+  static const String _channelDesc =
+      'Avvisi ritardi sulle fermate monitorate';
 
   /// `time` → minutes ("departure"→0, "5'"→5).
   static int? passageMinutes(String? timeStr) {
@@ -202,9 +212,12 @@ class NotificationsService {
         final last = _lastNotified[key];
         if (last != null && nowMs - last <= _notifyCooldownMs) continue;
         final lineName = '${p['line'] ?? ''}'.split('_').first;
+        final en = await _lang() == 'en';
         await _notify(
-          'Ritardo Linea $lineName',
-          '$lineName verso ${p['destination']} - ritardo $delayMin min (fermata ${stop['name']})',
+          en ? 'Line $lineName delay' : 'Ritardo Linea $lineName',
+          en
+              ? '$lineName to ${p['destination']} - $delayMin min late (stop ${stop['name']})'
+              : '$lineName verso ${p['destination']} - ritardo $delayMin min (fermata ${stop['name']})',
           key,
         );
         _lastNotified[key] = nowMs;
@@ -216,9 +229,12 @@ class NotificationsService {
       _imminentState[stopId] = state;
       if (hadState) {
         for (final d in departed) {
+          final en = await _lang() == 'en';
           await _notify(
-            'Bus passato',
-            'Il bus ${d.line} verso ${d.dest} è appena passato a ${stop['name']}',
+            en ? 'Bus departed' : 'Bus passato',
+            en
+                ? 'Bus ${d.line} to ${d.dest} just left ${stop['name']}'
+                : 'Il bus ${d.line} verso ${d.dest} è appena passato a ${stop['name']}',
             'passed_${stopId}_${d.line}_${d.dest}',
           );
         }

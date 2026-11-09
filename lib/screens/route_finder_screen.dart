@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../services/stops_service.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
@@ -124,7 +125,6 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
       initialDate: _date,
       firstDate: DateTime.now().subtract(const Duration(days: 1)),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      locale: const Locale('it'),
     );
     if (d != null) setState(() => _date = d);
   }
@@ -148,8 +148,8 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
   Future<void> _search() async {
     if (_origin == null || _destination == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Seleziona partenza e destinazione')),
+        SnackBar(
+            content: Text(context.l10n.selectOriginDest)),
       );
       return;
     }
@@ -172,28 +172,28 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final df = DateFormat('dd/MM/yyyy');
+    final df = DateFormat.yMd(Localizations.localeOf(context).toLanguageTag());
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
-            child: AppHeader(title: 'Trova\nPercorso'),
+          SliverToBoxAdapter(
+            child: AppHeader(title: context.l10n.findRouteTitle),
           ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 if (_favRoutes.isNotEmpty) ...[
-                  const SectionLabel('Tragitti preferiti'),
+                  SectionLabel(context.l10n.favRoutes),
                   const SizedBox(height: 8),
                   for (final r in _favRoutes) _favRouteTile(r),
                   const SizedBox(height: 12),
                 ],
                 _SelectionCard(
                   icon: Icons.trip_origin,
-                  label: 'Partenza',
-                  value: _origin?.name ?? 'Seleziona partenza',
+                  label: context.l10n.departure,
+                  value: _origin?.name ?? context.l10n.selectDeparture,
                   selected: _origin != null,
                   onTap: () => _pickStation(true),
                 ),
@@ -206,9 +206,9 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
                 ),
                 _SelectionCard(
                   icon: Icons.place_outlined,
-                  label: 'Destinazione',
+                  label: context.l10n.destination,
                   value:
-                      _destination?.name ?? 'Seleziona destinazione',
+                      _destination?.name ?? context.l10n.selectDestination,
                   selected: _destination != null,
                   onTap: () => _pickStation(false),
                 ),
@@ -228,7 +228,7 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Opzioni di partenza e ritorno',
+                                  context.l10n.departureReturnOptions,
                                   style: TextStyle(
                                     color: context.ink,
                                     fontWeight: FontWeight.w600,
@@ -253,8 +253,8 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
                             crossAxisAlignment:
                                 CrossAxisAlignment.start,
                             children: [
-                              const SectionLabel(
-                                  'Seleziona data e ora partenza'),
+                              SectionLabel(context.l10n
+                                  .selectDepartureDateTime),
                               const SizedBox(height: 10),
                               Row(
                                 children: [
@@ -275,15 +275,17 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
                                 ],
                               ),
                               const SizedBox(height: 18),
-                              const SectionLabel('Ottimizza per'),
+                              SectionLabel(context.l10n.optimizeFor),
                               const SizedBox(height: 10),
                               Wrap(
                                 spacing: 8,
                                 children: [
                                   for (final (value, label) in [
-                                    ('time', 'tempo'),
-                                    ('transfers', 'cambi'),
-                                    ('walking', 'a piedi'),
+                                    ('time', context.l10n.optTime),
+                                    ('transfers',
+                                        context.l10n.optTransfers),
+                                    ('walking',
+                                        context.l10n.optWalking),
                                   ])
                                     ChoiceChip(
                                       label: Text(label),
@@ -297,7 +299,7 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
                               const SizedBox(height: 8),
                               SwitchListTile(
                                 contentPadding: EdgeInsets.zero,
-                                title: Text('Ritorno',
+                                title: Text(context.l10n.returnTrip,
                                     style: TextStyle(
                                         color: context.ink,
                                         fontWeight:
@@ -322,7 +324,7 @@ class _RouteFinderScreenState extends State<RouteFinderScreen> {
                 const SizedBox(height: 20),
                 FilledButton(
                   onPressed: _search,
-                  child: const Text('Ricerca soluzioni'),
+                  child: Text(context.l10n.searchSolutions),
                 ),
               ]),
             ),

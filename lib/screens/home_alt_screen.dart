@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../services/stops_service.dart';
 import '../services/storage_service.dart';
@@ -33,7 +34,7 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
   List<StopGroup> _nearby = [];
   Set<String> _favorites = {};
   LatLng? _userPos;
-  String _status = 'In attesa di geolocalizzazione...';
+  String _status = 'waiting';
   bool _located = false;
   bool _showTutorial = false;
   Map<String, dynamic>? _journeyOrigin;
@@ -75,13 +76,13 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
       setState(() {
         _userPos = LatLng(pos.latitude, pos.longitude);
         _located = true;
-        _status = 'Posizione trovata. Ecco le stazioni più vicine.';
+        _status = 'found';
         if (_groups.isNotEmpty) {
           _nearby = StopsService.nearby(_groups, pos.latitude, pos.longitude);
         }
       });
     } else {
-      setState(() => _status = 'Geolocalizzazione non disponibile');
+      setState(() => _status = 'unavailable');
     }
   }
 
@@ -90,15 +91,22 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
     Navigator.pop(context);
   }
 
+  String _statusText(BuildContext context) => switch (_status) {
+        'found' => context.l10n.geoFound,
+        'unavailable' => context.l10n.geoUnavailable,
+        _ => context.l10n.geoWaiting,
+      };
+
   void _startTour() {
+    final l10n = context.l10n;
     final steps = <HomeTourStep>[
-      HomeTourStep(_actionsKey, 'Le funzioni',
-          'Percorsi con cambio, mappa live dei mezzi, orari, ricerca corsa, statistiche e rete di linee.'),
+      HomeTourStep(_actionsKey, l10n.tourActionsTitle,
+          l10n.tourActionsBody),
       if (_nearbyKey.currentContext != null)
-        HomeTourStep(_nearbyKey, 'Fermate vicine',
-            'Con la geolocalizzazione attiva, qui compaiono le fermate più vicine a te.'),
-      HomeTourStep(_mapKey, 'La mappa',
-          'Ogni pallino è una fermata: toccalo per aprire i passaggi in tempo reale.'),
+        HomeTourStep(_nearbyKey, l10n.tourNearbyTitle,
+            l10n.tourNearbyBody),
+      HomeTourStep(_mapKey, l10n.tourMapTitle,
+          l10n.tourMapBody),
     ];
     HomeTour.run(context, steps, onDone: _dismissTutorial);
   }
@@ -142,11 +150,11 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
               Container(key: _actionsKey, child: _actionGrid()),
               const SizedBox(height: 20),
               if (favs.isNotEmpty) ...[
-                const SectionTitle('Le tue fermate'),
+                SectionTitle(context.l10n.yourStops),
                 for (final g in favs)
                   StopTile(
                       group: g,
-                      subtitle: '★ Preferita',
+                      subtitle: context.l10n.favBadge,
                       onTap: () => _openStop(g)),
                 const Divider(height: 28),
               ],
@@ -155,12 +163,12 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SectionTitle('Fermate vicine'),
+                    SectionTitle(context.l10n.nearbyStops),
                     if (_nearby.isEmpty)
                       Text(
                         _userPos == null
-                            ? _status
-                            : 'Nessuna fermata trovata nelle vicinanze.',
+                            ? _statusText(context)
+                            : context.l10n.noNearbyStops,
                         style: TextStyle(
                             color: context.muted, fontSize: 14),
                       )
@@ -185,8 +193,8 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SectionTitle('Mappa delle fermate'),
-                    HomeStatusBanner(text: _status, success: _located),
+                    SectionTitle(context.l10n.stopsMapTitle),
+                    HomeStatusBanner(text: _statusText(context), success: _located),
                     HomeMap(
                       groups: _groups,
                       nearby: _nearby,
@@ -256,8 +264,8 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
               ],
             ),
             const SizedBox(height: 18),
-            const Text(
-              'Il tuo viaggio, in tempo reale.',
+            Text(
+              context.l10n.homeTitleAlt,
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w800,
@@ -268,7 +276,7 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Orari, fermate e percorsi ACTV a Venezia',
+              context.l10n.homeSubtitle,
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.82),
                 fontSize: 15,
@@ -289,9 +297,9 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
                       const Icon(Icons.search,
                           color: Color(0xFF64736F), size: 22),
                       const SizedBox(width: 10),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Cerca una fermata',
+                          context.l10n.searchStop,
                           style: TextStyle(
                             color: Color(0xFF64736F),
                             fontWeight: FontWeight.w600,
@@ -327,7 +335,7 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Vuoi fare un giro?',
+            context.l10n.tourQ,
             style: TextStyle(
               color: context.ink,
               fontSize: 20,
@@ -336,8 +344,7 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Ti mostro in pochi secondi dove sono fermate, mappa, preferiti '
-            'e tutte le altre funzioni dell\'app.',
+            context.l10n.tourIntroBody,
             style: TextStyle(color: context.muted, fontSize: 14),
           ),
           const SizedBox(height: 14),
@@ -351,7 +358,7 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
                     shape: const StadiumBorder(),
                     minimumSize: const Size(0, 44),
                   ),
-                  child: const Text('Inizia il tour'),
+                  child: Text(context.l10n.startTour),
                 ),
               ),
               const SizedBox(width: 10),
@@ -362,7 +369,7 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
                     shape: const StadiumBorder(),
                     minimumSize: const Size(0, 44),
                   ),
-                  child: const Text('Salta'),
+                  child: Text(context.l10n.coachSkip),
                 ),
               ),
             ],
@@ -374,18 +381,19 @@ class _HomeAltScreenState extends State<HomeAltScreen> {
 
   /// `ha-actions` — 6 tiles with icon, title and subtitle.
   Widget _actionGrid() {
+    final l10n = context.l10n;
     final actions = <(IconData, String, String, Widget)>[
-      (Icons.route_rounded, 'Percorsi', 'Come arrivare',
+      (Icons.route_rounded, l10n.navRoutes, l10n.actRoutesSub,
           const RouteFinderScreen()),
-      (Icons.radar, 'Mappa live', 'Mezzi in movimento',
+      (Icons.radar, l10n.actLiveMap, l10n.actLiveMapSub,
           const LiveMapScreen()),
-      (Icons.schedule, 'Orari linee', 'Tabella oraria',
+      (Icons.schedule, l10n.actSchedules, l10n.actSchedulesSub,
           const LineScheduleScreen()),
-      (Icons.directions_bus, 'Cerca corsa', 'Per linea o tripId',
+      (Icons.directions_bus, l10n.actTripSearch, l10n.actTripSearchSub,
           const TripFinderScreen()),
-      (Icons.bar_chart, 'Ritardi', 'Statistiche servizio',
+      (Icons.bar_chart, l10n.actDelays, l10n.actDelaysSub,
           const DelayStatsScreen()),
-      (Icons.map_outlined, 'Rete', 'Tutte le linee',
+      (Icons.map_outlined, l10n.actNetwork, l10n.actNetworkSub,
           const LinesMapScreen()),
     ];
     return LayoutBuilder(builder: (context, c) {

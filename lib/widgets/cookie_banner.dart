@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n_ext.dart';
+
 import '../screens/privacy_screen.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
@@ -73,9 +75,8 @@ class _CookieBannerState extends State<CookieBanner> {
                           style: TextStyle(
                               color: context.muted, fontSize: 13),
                           children: [
-                            const TextSpan(
-                                text:
-                                    'Utilizziamo i dati locali e i cookie del server per migliorare la tua esperienza. '),
+                            TextSpan(
+                                text: context.l10n.cookieBannerText),
                             WidgetSpan(
                               alignment: PlaceholderAlignment.baseline,
                               baseline: TextBaseline.alphabetic,
@@ -86,7 +87,7 @@ class _CookieBannerState extends State<CookieBanner> {
                                       builder: (_) =>
                                           const PrivacyScreen()),
                                 ),
-                                child: Text('Scopri di più',
+                                child: Text(context.l10n.cookieLearnMore,
                                     style: TextStyle(
                                         color: context.blue,
                                         decoration:
@@ -103,7 +104,7 @@ class _CookieBannerState extends State<CookieBanner> {
                           onPressed: _accept,
                           style: FilledButton.styleFrom(
                               minimumSize: const Size(0, 40)),
-                          child: const Text('Accetta'),
+                          child: Text(context.l10n.cookieAccept),
                         ),
                       ),
                     ],
@@ -172,7 +173,7 @@ class _OfflineIndicatorState extends State<OfflineIndicator> {
                         color: Colors.white, shape: BoxShape.circle),
                   ),
                   const SizedBox(width: 8),
-                  const Text('Sei offline',
+                  Text(context.l10n.youAreOffline,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,

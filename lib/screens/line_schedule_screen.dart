@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../l10n/l10n_ext.dart';
+
 import '../api/api_client.dart';
 import '../models/models.dart';
 import '../theme/app_theme.dart';
-import '../widgets/app_header.dart';
 import '../widgets/cards.dart';
-import '../widgets/line_badge.dart';
+import '../widgets/slim_header.dart';
+import '../widgets/service_switch.dart';
 
 class LineScheduleScreen extends StatefulWidget {
   const LineScheduleScreen({super.key});
@@ -113,11 +115,11 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
     return Scaffold(
       body: Column(
         children: [
-          AppHeader(
+          SlimHeader(
             showBack: true,
-            title: 'Orari delle linee',
+            title: context.l10n.moreLineSchedules,
             subtitle:
-                _line == null ? 'Scegli una linea' : 'Linea $_line · $_day',
+                _line == null ? context.l10n.chooseLine : context.l10n.lineDay(_line!, localizedDay(context, _day)),
             actions: [
               _HeaderIcon(
                 icon: Icons.calendar_today,
@@ -139,34 +141,56 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Row(
-              children: [
-                for (final (value, label) in [
-                  ('automobilistico', 'Autobus'),
-                  ('navigation', 'Navigazione'),
-                ])
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ChoiceChip(
-                      label: Text(label),
-                      selected: _service == value,
-                      onSelected: (_) {
-                        setState(() => _service = value);
-                        _loadCatalog();
-                      },
+            child: AppCard(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      ServiceSwitch(
+                        mode: _service,
+                        allowBoth: false,
+                        onChanged: (v) {
+                          setState(() => _service = v);
+                          _loadCatalog();
+                        },
+                      ),
+                      const Spacer(),
+                      if (_line != null)
+                        TextButton.icon(
+                          onPressed: () => setState(() {
+                            _line = null;
+                            _variants = null;
+                            _schedule = null;
+                          }),
+                          icon: const Icon(Icons.arrow_back,
+                              size: 16),
+                          label: Text(context.l10n.linesChip),
+                        ),
+                    ],
+                  ),
+                  if (_line == null) ...[
+                    const SizedBox(height: 10),
+                    SectionLabel(context.l10n.lsSearchLabel),
+                    const SizedBox(height: 6),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: context.l10n.searchLineHint,
+                        prefixIcon: const Icon(Icons.search,
+                            size: 20),
+                        isDense: true,
+                      ),
+                      onChanged: (v) =>
+                          setState(() => _search = v),
                     ),
-                  ),
-                if (_line != null)
-                  TextButton.icon(
-                    onPressed: () => setState(() {
-                      _line = null;
-                      _variants = null;
-                      _schedule = null;
-                    }),
-                    icon: const Icon(Icons.arrow_back, size: 16),
-                    label: const Text('Linee'),
-                  ),
-              ],
+                    const SizedBox(height: 10),
+                    SectionLabel(context.l10n.lineLabel),
+                    const SizedBox(height: 6),
+                    _linePicker(),
+                  ],
+                ],
+              ),
             ),
           ),
           Expanded(child: _body()),
@@ -184,72 +208,62 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
     }
     if (_schedule != null) return _scheduleView();
     if (_variants != null) return _variantsView();
-    if (_catalog != null) return _catalogView();
+    if (_line == null) {
+      return Center(
+          child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Text(
+          _catalog == null
+              ? context.l10n.loading
+              : context.l10n.chooseLine,
+          style: TextStyle(color: context.muted),
+        ),
+      ));
+    }
     return const LoadingView();
   }
 
-  Widget _catalogView() {
-    if (_catalog!.isEmpty) {
-      return Center(
-          child: Text('Nessuna linea per questa data.',
-              style: TextStyle(color: context.muted)));
-    }
-    final entries = _search.isEmpty
-        ? _catalog!
-        : _catalog!
+  /// `<select id="line-input">` populated from the catalog, filtered by
+  /// the search field — mirrors `lineSchedule.js` line picker.
+  Widget _linePicker() {
+    final entries = _catalog ?? const <LineCatalogEntry>[];
+    final filtered = _search.isEmpty
+        ? entries
+        : entries
             .where((e) =>
                 e.line.toLowerCase().contains(_search.toLowerCase()) ||
                 e.name.toLowerCase().contains(_search.toLowerCase()))
             .toList();
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-      itemCount: entries.length + 1,
-      itemBuilder: (context, i) {
-        if (i == 0) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Cerca per numero o destinazione…',
-                prefixIcon: Icon(Icons.search),
-                isDense: true,
-              ),
-              onChanged: (v) => setState(() => _search = v),
+    return DropdownButtonFormField<String>(
+      isExpanded: true,
+      decoration: InputDecoration(
+        hintText: _catalog == null
+            ? context.l10n.loading
+            : context.l10n.chooseLine,
+        isDense: true,
+      ),
+      items: [
+        for (final e in filtered)
+          DropdownMenuItem(
+            value: e.line,
+            child: Text(
+              '${e.line} · ${e.name}',
+              overflow: TextOverflow.ellipsis,
             ),
-          );
-        }
-        final e = entries[i - 1];
-        return AppCard(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          onTap: () => _loadVariants(e.line),
-          child: Row(
-            children: [
-              LineBadge(label: e.line),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  e.name,
-                  style: TextStyle(
-                      color: context.ink, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Text('${e.tripsCount} corse',
-                  style: TextStyle(color: context.muted, fontSize: 12)),
-              Icon(Icons.chevron_right, color: context.muted),
-            ],
           ),
-        );
-      },
+      ],
+      onChanged: _catalog == null
+          ? null
+          : (v) {
+              if (v != null) _loadVariants(v);
+            },
     );
   }
 
   Widget _variantsView() {
     if (_variants!.isEmpty) {
       return Center(
-          child: Text('Nessuna variante attiva.',
+          child: Text(context.l10n.noActiveVariants,
               style: TextStyle(color: context.muted)));
     }
     return ListView.builder(
@@ -272,7 +286,7 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                '${v.origin} → ${v.terminus} · ${v.stopsCount} fermate · ${v.tripsCount} corse',
+                context.l10n.variantInfo(v.origin, v.terminus, v.stopsCount, v.tripsCount),
                 style: TextStyle(color: context.muted, fontSize: 13),
               ),
             ],
@@ -287,10 +301,21 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
     final runs = (_schedule!['runs'] as List? ?? []);
     if (stops.isEmpty || runs.isEmpty) {
       return Center(
-          child: Text('Nessun orario disponibile.',
+          child: Text(context.l10n.noScheduleAvailable,
               style: TextStyle(color: context.muted)));
     }
-    return SingleChildScrollView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Text(
+            context.l10n.scheduleSummary(stops.length, runs.length),
+            style: TextStyle(color: context.muted, fontSize: 13),
+          ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -300,7 +325,7 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
           dataRowMinHeight: 34,
           dataRowMaxHeight: 40,
           columns: [
-            const DataColumn(label: Text('Fermata')),
+            DataColumn(label: Text(context.l10n.stopColumn)),
             for (final r in runs)
               DataColumn(
                 label: Text(
@@ -331,6 +356,9 @@ class _LineScheduleScreenState extends State<LineScheduleScreen> {
           ],
         ),
       ),
+        ),
+        ),
+      ],
     );
   }
 }

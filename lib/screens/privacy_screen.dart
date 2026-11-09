@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/api_client.dart';
+import '../l10n/l10n_ext.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_header.dart';
 import '../widgets/cards.dart';
@@ -22,12 +23,16 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     final prefs = await SharedPreferences.getInstance();
     final keepUrl = prefs.getString('api_base_url');
     final keepTheme = prefs.getString('theme_mode');
+    final keepLocale = prefs.getString('app_locale');
     await prefs.clear();
     if (keepUrl != null) await prefs.setString('api_base_url', keepUrl);
     if (keepTheme != null) await prefs.setString('theme_mode', keepTheme);
+    if (keepLocale != null) {
+      await prefs.setString('app_locale', keepLocale);
+    }
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dati locali eliminati')),
+        SnackBar(content: Text(context.l10n.localDataCleared)),
       );
     }
   }
@@ -36,7 +41,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     await ApiClient.setBaseUrl(_urlController.text.trim());
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Server API aggiornato')),
+        SnackBar(content: Text(context.l10n.apiServerUpdated)),
       );
     }
   }
@@ -52,11 +57,11 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: AppHeader(
               showBack: true,
-              title: 'Privacy e dati',
-              subtitle: 'Gestione dei dati memorizzati',
+              title: context.l10n.morePrivacy,
+              subtitle: context.l10n.privacySubtitle,
             ),
           ),
           SliverPadding(
@@ -67,14 +72,9 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SectionTitle('Dati locali'),
+                      SectionTitle(context.l10n.localData),
                       Text(
-                        'L\'app memorizza sul dispositivo: tema '
-                        '(theme), consenso cookie (cookie_consent_accepted), '
-                        'fermate preferite (favorite_stops), fermate recenti '
-                        '(recent_stops), tragitti (favorite_routes, route_*), '
-                        'storico ritardi (delay_history), fermate monitorate '
-                        '(monitored_stops) e impostazioni.',
+                        context.l10n.localDataDesc,
                         style: TextStyle(color: context.muted, fontSize: 13),
                       ),
                       const SizedBox(height: 10),
@@ -87,13 +87,13 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                             await prefs.remove('cookie_consent_accepted');
                             if (context.mounted) {
                               ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                      content: Text(
-                                          'Consenso cookie revocato')));
+                                  .showSnackBar(SnackBar(
+                                      content: Text(context.l10n
+                                          .cookieConsentRevoked)));
                             }
                           },
                           child:
-                              const Text('Revoca consenso cookie'),
+                              Text(context.l10n.revokeCookieConsent),
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -102,7 +102,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                         child: OutlinedButton.icon(
                           onPressed: _clearData,
                           icon: const Icon(Icons.delete_outline),
-                          label: const Text('Elimina tutti i dati'),
+                          label: Text(context.l10n.deleteAllData),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.red,
                             side: const BorderSide(color: AppColors.red),
@@ -117,13 +117,9 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SectionTitle('Terze parti'),
+                      SectionTitle(context.l10n.thirdParties),
                       Text(
-                        'Mappe e geocoding: OpenStreetMap e Nominatim.\n'
-                        'Dati trasporto: backend ACTV '
-                        '(oraritemporeale.actv.it) e feed GTFS/GTFS-RT.\n'
-                        'I feedback inviati arrivano al server API '
-                        'configurato (nessun dato personale obbligatorio).',
+                        context.l10n.thirdPartiesDesc,
                         style: TextStyle(color: context.muted, fontSize: 13),
                       ),
                     ],
@@ -136,14 +132,14 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                     children: [
                       const SectionTitle('Server API'),
                       Text(
-                        'Indirizzo del server che fornisce i dati ACTV.',
+                        context.l10n.apiServerDesc,
                         style: TextStyle(color: context.muted),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: _urlController,
-                        decoration: const InputDecoration(
-                          labelText: 'URL base',
+                        decoration: InputDecoration(
+                          labelText: context.l10n.baseUrl,
                           hintText: 'https://actv-live.test',
                         ),
                         keyboardType: TextInputType.url,
@@ -153,7 +149,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                         width: double.infinity,
                         child: FilledButton(
                           onPressed: _saveUrl,
-                          child: const Text('Salva'),
+                          child: Text(context.l10n.save),
                         ),
                       ),
                     ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../api/api_client.dart';
+import '../l10n/l10n_ext.dart';
 import '../models/models.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
@@ -156,7 +157,7 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
     }
     final diff = dep.difference(DateTime.now()).inMinutes;
     if (diff < 0) return '';
-    return '($diff min da ora)';
+    return context.l10n.minFromNow(diff);
   }
 
   List<PlannedRoute>? get _current =>
@@ -164,7 +165,7 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final df = DateFormat('dd/MM/yyyy');
+    final df = DateFormat.yMd(Localizations.localeOf(context).toLanguageTag());
     final routes = _current;
     return Scaffold(
       body: RefreshIndicator(
@@ -174,7 +175,7 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
             SliverToBoxAdapter(
               child: AppHeader(
                 showBack: true,
-                title: 'Soluzioni di viaggio',
+                title: context.l10n.travelSolutions,
                 subtitle:
                     '${widget.origin['name']} → ${widget.destination['name']}\n${df.format(widget.date)} · ${_hhmm(widget.time)}',
               ),
@@ -186,8 +187,8 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
                   child: Row(
                     children: [
                       for (final (v, label) in [
-                        (false, 'Andata'),
-                        (true, 'Ritorno'),
+                        (false, context.l10n.outbound),
+                        (true, context.l10n.returnTab),
                       ])
                         Expanded(
                           child: GestureDetector(
@@ -234,9 +235,9 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
                 child: ErrorView(error: _error!, onRetry: _load),
               )
             else if (routes == null)
-              const SliverFillRemaining(
-                  child:
-                      LoadingView(message: 'Ricerca percorsi in corso…'))
+              SliverFillRemaining(
+                  child: LoadingView(
+                      message: context.l10n.searchingRoutes))
             else if (routes.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
@@ -250,7 +251,7 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
                             size: 44, color: context.muted),
                         const SizedBox(height: 12),
                         Text(
-                          'Nessun percorso trovato per i parametri specificati',
+                          context.l10n.noRouteFound,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: context.ink,
@@ -261,7 +262,7 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
                         const SizedBox(height: 12),
                         OutlinedButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text('Indietro'),
+                          child: Text(context.l10n.back),
                         ),
                       ],
                     ),
@@ -320,7 +321,7 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
                                 _comparing = false;
                                 _compareSelection.clear();
                               }),
-                              child: const Text('Annulla'),
+                              child: Text(context.l10n.cancel),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -331,8 +332,8 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
                                   _compareSelection.length >= 2
                                       ? _showCompare
                                       : null,
-                              child: const Text(
-                                  'Confronta percorsi'),
+                              child: Text(context.l10n
+                                  .compareRoutes),
                             ),
                           ),
                         ],
@@ -341,7 +342,7 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
                         onPressed: () =>
                             setState(() => _comparing = true),
                         icon: const Icon(Icons.compare_arrows),
-                        label: const Text('Confronta'),
+                        label: Text(context.l10n.compare),
                       ),
               ),
             )
@@ -382,14 +383,14 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Confronta percorsi',
+              Text(ctx.l10n.compareRoutes,
                   style: TextStyle(
                       color: ctx.ink,
                       fontWeight: FontWeight.w800,
                       fontSize: 18)),
               const SizedBox(height: 14),
               for (var i = 0; i < selected.length; i++) ...[
-                Text('Soluzione ${_compareSelection.elementAt(i) + 1}',
+                Text(ctx.l10n.solutionN(_compareSelection.elementAt(i) + 1),
                     style: TextStyle(
                         color: ctx.muted,
                         fontWeight: FontWeight.w700,
@@ -420,7 +421,8 @@ class _RouteResultsScreenState extends State<RouteResultsScreen> {
                                     TextStyle(color: ctx.ink)),
                             const SizedBox(width: 12),
                             Text(
-                              '${r.legs.where((l) => l.type != 'walking').length - 1 <= 0 ? 'Diretto' : '${r.legs.where((l) => l.type != 'walking').length - 1} cambi'}',
+                              ctx.l10n.transfersCount(
+                                  r.legs.where((l) => l.type != 'walking').length - 1),
                               style: TextStyle(
                                   color: ctx.muted, fontSize: 13),
                             ),
@@ -524,8 +526,8 @@ class _TimelineLeg extends StatelessWidget {
                       Expanded(
                         child: Text(
                           walking
-                              ? 'Cammina${distance != null ? ' per $distance m' : ''}${leg.raw['duration'] != null ? ' (${leg.raw['duration']} min)' : ''}'
-                              : '${leg.headsign.isEmpty ? leg.toName : leg.headsign}${stopsCount != null ? ' · $stopsCount fermate' : ''}',
+                              ? '${context.l10n.walk}${distance != null ? ' ${context.l10n.walkFor(distance)}' : ''}${leg.raw['duration'] != null ? ' (${leg.raw['duration']} min)' : ''}'
+                              : '${leg.headsign.isEmpty ? leg.toName : leg.headsign}${stopsCount != null ? context.l10n.stopsCount(int.tryParse('$stopsCount') ?? 0) : ''}',
                           style: TextStyle(
                               color: context.ink,
                               fontWeight: FontWeight.w600,
@@ -600,7 +602,7 @@ class _RouteCard extends StatelessWidget {
                     color: selected ? context.green : context.muted,
                   ),
                 ),
-              SectionLabel('Soluzione ${index + 1}'),
+              SectionLabel(context.l10n.solutionN(index + 1)),
               const Spacer(),
               Text(
                 '${route.duration} min',
@@ -641,9 +643,7 @@ class _RouteCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    transfers == 0
-                        ? 'Diretto'
-                        : '$transfers cambi${transfers == 1 ? 'o' : ''}',
+                    context.l10n.transfersCount(transfers),
                     style: TextStyle(
                         color: context.muted, fontSize: 13),
                   ),
@@ -695,11 +695,11 @@ class _RouteCard extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: onDetails,
-                child: const Text('Dettagli'),
+                child: Text(context.l10n.details),
               ),
               const SizedBox(width: 8),
               Text(
-                'Seleziona →',
+                context.l10n.selectArrow,
                 style: TextStyle(
                   color: context.blue,
                   fontWeight: FontWeight.w700,

@@ -10,6 +10,7 @@ import '../services/actv_realtime.dart';
 import '../services/stops_service.dart';
 import '../services/storage_service.dart';
 import '../theme/app_theme.dart';
+import '../l10n/l10n_ext.dart';
 import 'cards.dart';
 
 /// Venice city centre — fallback map position.
@@ -133,8 +134,8 @@ void showStrikeDialog(BuildContext context, StrikeResult result) {
           Expanded(
             child: Text(
               result.notice.isNotEmpty
-                  ? 'Sciopero'
-                  : 'Possibile sciopero in corso',
+                  ? ctx.l10n.strikeTitle
+                  : ctx.l10n.strikePossible,
               style: TextStyle(
                   color: ctx.ink,
                   fontWeight: FontWeight.w800,
@@ -152,15 +153,12 @@ void showStrikeDialog(BuildContext context, StrikeResult result) {
               Text(result.notice, style: TextStyle(color: ctx.ink))
             else
               Text(
-                'Il servizio in tempo reale non risponde su '
-                '${result.emptyStops.length} fermate controllate: è probabile '
-                'uno sciopero o un\'interruzione del servizio. Gli orari '
-                'previsti potrebbero non essere rispettati.',
+                ctx.l10n.strikeBody(result.emptyStops.length),
                 style: TextStyle(color: ctx.ink),
               ),
             if (result.emptyStops.isNotEmpty) ...[
               const SizedBox(height: 12),
-              Text('Fermate senza passaggi rilevati:',
+              Text(ctx.l10n.strikeEmptyStops,
                   style: TextStyle(color: ctx.muted, fontSize: 13)),
               const SizedBox(height: 6),
               for (final s in result.emptyStops)
@@ -171,7 +169,7 @@ void showStrikeDialog(BuildContext context, StrikeResult result) {
                       Navigator.pop(ctx);
                       final g = StopGroup(
                           name: s.name.isEmpty
-                              ? 'Fermata ${s.id}'
+                              ? ctx.l10n.stopDefaultName(s.id)
                               : s.name,
                           service: 'automobilistico',
                           realtime: true)
@@ -187,7 +185,7 @@ void showStrikeDialog(BuildContext context, StrikeResult result) {
                         Expanded(
                           child: Text(
                             s.name.isEmpty
-                                ? 'Fermata ${s.id}'
+                                ? ctx.l10n.stopDefaultName(s.id)
                                 : s.name,
                             style: TextStyle(
                                 color: ctx.blue,
@@ -208,7 +206,7 @@ void showStrikeDialog(BuildContext context, StrikeResult result) {
       actions: [
         FilledButton(
           onPressed: () => Navigator.pop(ctx),
-          child: const Text('Ho capito'),
+          child: Text(ctx.l10n.gotIt),
         ),
       ],
     ),
@@ -499,23 +497,23 @@ class _MapPopup extends StatelessWidget {
             TextSpan(
               style: TextStyle(color: context.ink),
               children: [
-                const TextSpan(
-                    text: 'Stazione: ',
-                    style: TextStyle(fontWeight: FontWeight.w700)),
+                TextSpan(
+                    text: context.l10n.mapStationLabel,
+                    style: const TextStyle(fontWeight: FontWeight.w700)),
                 TextSpan(text: group.name),
               ],
             ),
           ),
           if (userPos != null)
             Text(
-              'Distanza: ${(StopsService.distanceTo(group, userPos!.latitude, userPos!.longitude) / 1000).toStringAsFixed(2)} km',
+              context.l10n.mapDistance((StopsService.distanceTo(group, userPos!.latitude, userPos!.longitude) / 1000).toStringAsFixed(2)),
               style: TextStyle(color: context.muted, fontSize: 12),
             ),
           const SizedBox(height: 6),
           InkWell(
             onTap: onOpen,
             child: Text(
-              'Vedi passaggi ›',
+              context.l10n.mapSeePassages,
               style: TextStyle(
                 color: context.blue,
                 fontWeight: FontWeight.w700,
@@ -550,7 +548,7 @@ class HomeMapFullscreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: const Text('Mappa delle fermate'),
+        title: Text(context.l10n.stopsMapTitle),
       ),
       body: HomeMap(
         groups: groups,
@@ -588,7 +586,7 @@ class JourneyResumeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionLabel('Il tuo ultimo viaggio'),
+            SectionLabel(context.l10n.journeySection),
             const SizedBox(height: 6),
             Text(
               '$origin → $destination',
@@ -608,7 +606,7 @@ class JourneyResumeCard extends StatelessWidget {
                       shape: const StadiumBorder(),
                       minimumSize: const Size(0, 44),
                     ),
-                    child: const Text('Riprendi viaggio'),
+                    child: Text(context.l10n.journeyResume),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -619,7 +617,7 @@ class JourneyResumeCard extends StatelessWidget {
                       shape: const StadiumBorder(),
                       minimumSize: const Size(0, 44),
                     ),
-                    child: const Text('Modifica'),
+                    child: Text(context.l10n.modify),
                   ),
                 ),
               ],
@@ -783,7 +781,7 @@ class _TourOverlay extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: onSkip,
-                            child: const Text('Salta'),
+                            child: Text(context.l10n.coachSkip),
                           ),
                           const Spacer(),
                           FilledButton(
@@ -791,7 +789,7 @@ class _TourOverlay extends StatelessWidget {
                             style: FilledButton.styleFrom(
                               minimumSize: const Size(0, 40),
                             ),
-                            child: Text(isLast ? 'Fine' : 'Avanti'),
+                            child: Text(isLast ? context.l10n.coachDone : context.l10n.coachNext),
                           ),
                         ],
                       ),
@@ -842,7 +840,7 @@ class HomeFooter extends StatelessWidget {
         context,
         MaterialPageRoute(builder: (_) => const CreditsScreen()),
       ),
-      child: Text('Crediti e licenze', style: link),
+      child: Text(context.l10n.footerCredits, style: link),
     );
 
     if (compact) {
@@ -850,11 +848,11 @@ class HomeFooter extends StatelessWidget {
         children: [
           Text.rich(
             TextSpan(style: style, children: [
-              const TextSpan(
-                  text: 'MIT License (2025–2026) · App di '),
+              TextSpan(
+                  text: context.l10n.footerAppBy),
               author('Samuele Brusegan',
                   'https://github.com/samuele-brusegan'),
-              const TextSpan(text: ' e '),
+              TextSpan(text: context.l10n.footerAnd),
               author('Andrea Davanzo',
                   'https://github.com/andreadavanzo09-bit'),
             ]),
@@ -867,7 +865,7 @@ class HomeFooter extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Progetto non ufficiale, non affiliato ad ACTV S.p.A. — dati mappe © OpenStreetMap contributors',
+            context.l10n.footerUnofficial,
             style: style.copyWith(fontSize: 11),
             textAlign: TextAlign.center,
           ),
@@ -882,7 +880,7 @@ class HomeFooter extends StatelessWidget {
         Divider(color: context.border, height: 24),
         Text.rich(
           TextSpan(style: style, children: [
-            const TextSpan(text: 'App sviluppata da '),
+            TextSpan(text: context.l10n.footerDevBy),
             author('Samuele Brusegan',
                 'https://github.com/samuele-brusegan'),
           ]),
@@ -890,7 +888,7 @@ class HomeFooter extends StatelessWidget {
         ),
         Text.rich(
           TextSpan(style: style, children: [
-            const TextSpan(text: 'Grafica e design da '),
+            TextSpan(text: context.l10n.footerDesignBy),
             author('Andrea Davanzo',
                 'https://github.com/andreadavanzo09-bit'),
           ]),
@@ -903,7 +901,7 @@ class HomeFooter extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Progetto non ufficiale, non affiliato ad ACTV S.p.A.\nDati mappe © OpenStreetMap contributors',
+          context.l10n.footerUnofficialMultiline,
           style: style.copyWith(fontSize: 11),
           textAlign: TextAlign.center,
         ),

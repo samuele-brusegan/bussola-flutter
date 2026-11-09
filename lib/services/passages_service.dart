@@ -456,11 +456,12 @@ class PassagesService {
   }
 
   /// Label for the vehicle distance ("a 350 m" / "a 1,2 km").
-  static String vehicleLabel(double? meters) {
-    if (meters == null || !meters.isFinite) return 'Posizione rilevata';
+  static String vehicleLabel(double? meters,
+      {String detected = 'Posizione rilevata', String at = 'a'}) {
+    if (meters == null || !meters.isFinite) return detected;
     if (meters < 950) {
-      return 'a ${(meters / 10).round().clamp(1, 100000) * 10} m';
+      return '$at ${(meters / 10).round().clamp(1, 100000) * 10} m';
     }
-    return 'a ${(meters / 1000).toStringAsFixed(1).replaceAll('.', ',')} km';
+    return '$at ${(meters / 1000).toStringAsFixed(1).replaceAll('.', ',')} km';
   }
 }

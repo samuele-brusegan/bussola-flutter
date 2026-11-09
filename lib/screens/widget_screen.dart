@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../api/api_client.dart';
+import '../l10n/l10n_ext.dart';
 import '../services/actv_realtime.dart';
 import '../services/line_colors.dart';
 import '../theme/app_theme.dart';
@@ -69,7 +70,7 @@ class _WidgetScreenState extends State<WidgetScreen> {
               children: [
                 Text(
                   widget.name.isEmpty
-                      ? 'Fermata ${widget.stopId}'
+                      ? context.l10n.stopDefaultName(widget.stopId)
                       : widget.name,
                   style: const TextStyle(
                       color: Colors.white,
@@ -85,7 +86,7 @@ class _WidgetScreenState extends State<WidgetScreen> {
           Expanded(
             child: _passages.isEmpty
                 ? Center(
-                    child: Text('Nessun passaggio previsto.',
+                    child: Text(context.l10n.noPassagesScheduled,
                         style: TextStyle(color: context.muted)),
                   )
                 : ListView.builder(
@@ -120,7 +121,7 @@ class _WidgetScreenState extends State<WidgetScreen> {
                                 ),
                               ),
                               Text(
-                                '${p['time'] == 'departure' ? 'Ora' : p['time']}',
+                                '${p['time'] == 'departure' ? context.l10n.now : p['time']}',
                                 style: TextStyle(
                                   color: real
                                       ? const Color(0xFF009E61)
@@ -143,7 +144,7 @@ class _WidgetScreenState extends State<WidgetScreen> {
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Text(
-                'Apri su ACTV Live →',
+                context.l10n.openOnActvLive,
                 style: TextStyle(
                     color: const Color(0xFF009E61),
                     fontWeight: FontWeight.w700,

@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/api_client.dart';
+import 'l10n/app_localizations.dart';
+import 'l10n/l10n_ext.dart';
 import 'screens/credits_screen.dart';
 import 'screens/delay_stats_screen.dart';
 import 'screens/feedback_screen.dart';
-import 'screens/home_alt_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/line_schedule_screen.dart';
 import 'screens/lines_map_screen.dart';
@@ -21,10 +23,13 @@ import 'widgets/cookie_banner.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // I font Inter sono bundled in assets/google_fonts/: niente fetch a runtime.
+  GoogleFonts.config.allowRuntimeFetching = false;
   await ApiClient.init();
   unawaited(NotificationsService.init());
   final themeMode = await _loadThemeMode();
-  runApp(BussolaApp(themeMode: themeMode));
+  final locale = await _loadLocale();
+  runApp(BussolaApp(themeMode: themeMode, locale: locale));
 }
 
 Future<ThemeMode> _loadThemeMode() async {
@@ -36,9 +41,19 @@ Future<ThemeMode> _loadThemeMode() async {
   };
 }
 
+Future<Locale?> _loadLocale() async {
+  final prefs = await SharedPreferences.getInstance();
+  return switch (prefs.getString('app_locale')) {
+    'it' => const Locale('it'),
+    'en' => const Locale('en'),
+    _ => null,
+  };
+}
+
 class BussolaApp extends StatefulWidget {
   final ThemeMode themeMode;
-  const BussolaApp({super.key, required this.themeMode});
+  final Locale? locale;
+  const BussolaApp({super.key, required this.themeMode, this.locale});
 
   static BussolaAppState of(BuildContext context) =>
       context.findAncestorStateOfType<BussolaAppState>()!;
@@ -49,8 +64,20 @@ class BussolaApp extends StatefulWidget {
 
 class BussolaAppState extends State<BussolaApp> {
   late ThemeMode _mode = widget.themeMode;
+  late Locale? _locale = widget.locale;
 
   ThemeMode get themeMode => _mode;
+  Locale? get locale => _locale;
+
+  Future<void> setLocale(String? code) async {
+    setState(() => _locale = code == null ? null : Locale(code));
+    final prefs = await SharedPreferences.getInstance();
+    if (code == null) {
+      await prefs.remove('app_locale');
+    } else {
+      await prefs.setString('app_locale', code);
+    }
+  }
 
   Future<void> setThemeMode(ThemeMode mode) async {
     setState(() => _mode = mode);
@@ -67,6 +94,9 @@ class BussolaAppState extends State<BussolaApp> {
     return MaterialApp(
       title: 'Bussolà',
       debugShowCheckedModeBanner: false,
+      locale: _locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: _mode,
@@ -100,12 +130,13 @@ class MainShellState extends State<MainShell> {
 
   void _openMore() {
     final ctx = context;
+    final l10n = ctx.l10n;
     showModalBottomSheet(
       context: ctx,
       showDragHandle: true,
       builder: (sheetCtx) {
-        Widget item(IconData icon, String label, Widget screen,
-            {Color? color}) {
+        Widget item(IconData icon, String label, Widget? screen,
+            {Color? color, VoidCallback? onTap}) {
           return ListTile(
             leading: Icon(icon, color: color ?? ctx.muted),
             title: Text(
@@ -115,13 +146,14 @@ class MainShellState extends State<MainShell> {
                 color: color ?? ctx.ink,
               ),
             ),
-            onTap: () {
-              Navigator.pop(sheetCtx);
-              Navigator.push(
-                ctx,
-                MaterialPageRoute(builder: (_) => screen),
-              );
-            },
+            onTap: onTap ??
+                () {
+                  Navigator.pop(sheetCtx);
+                  Navigator.push(
+                    ctx,
+                    MaterialPageRoute(builder: (_) => screen!),
+                  );
+                },
           );
         }
 
@@ -129,27 +161,55 @@ class MainShellState extends State<MainShell> {
           child: ListView(
             shrinkWrap: true,
             children: [
-              item(Icons.map_outlined, 'Mappa linee', const LinesMapScreen()),
-              item(Icons.schedule, 'Orari delle linee',
-                  const LineScheduleScreen()),
-              item(Icons.directions_bus, 'Bus in servizio',
+              item(Icons.directions_bus, l10n.moreLiveVehicles,
                   const LiveMapScreen()),
-              item(Icons.insights, 'Statistiche ritardi',
+              item(Icons.map_outlined, l10n.moreLinesMap,
+                  const LinesMapScreen()),
+              item(Icons.schedule, l10n.moreLineSchedules,
+                  const LineScheduleScreen()),
+              item(Icons.insights, l10n.moreDelayStats,
                   const DelayStatsScreen()),
-              item(Icons.edit_outlined, 'Invia feedback',
+              const Divider(height: 16),
+              item(Icons.edit_outlined, l10n.moreFeedback,
                   const FeedbackScreen(),
                   color: ctx.green),
-              item(Icons.privacy_tip_outlined, 'Privacy e dati',
+              item(Icons.language, l10n.moreLanguage, null,
+                  onTap: () => _pickLanguage(sheetCtx)),
+              const Divider(height: 16),
+              item(Icons.privacy_tip_outlined, l10n.morePrivacy,
                   const PrivacyScreen()),
-              item(Icons.info_outline, 'Crediti',
+              item(Icons.info_outline, l10n.moreCredits,
                   const CreditsScreen()),
-              item(Icons.home_outlined, 'Home alternativa',
-                  const HomeAltScreen()),
               const SizedBox(height: 8),
             ],
           ),
         );
       },
+    );
+  }
+
+  void _pickLanguage(BuildContext sheetCtx) {
+    final l10n = context.l10n;
+    Navigator.pop(sheetCtx);
+    showDialog(
+      context: context,
+      builder: (dlgCtx) => SimpleDialog(
+        title: Text(l10n.languageTitle),
+        children: [
+          for (final (code, label) in [
+            (null, l10n.languageSystem),
+            ('it', 'Italiano'),
+            ('en', 'English'),
+          ])
+            SimpleDialogOption(
+              onPressed: () {
+                BussolaApp.of(context).setLocale(code);
+                Navigator.pop(dlgCtx);
+              },
+              child: Text(label),
+            ),
+        ],
+      ),
     );
   }
 
@@ -165,9 +225,9 @@ class MainShellState extends State<MainShell> {
         child: SafeArea(
           child: Row(
             children: [
-              _navItem(0, Icons.home_rounded, 'Home'),
-              _navItem(1, Icons.place_outlined, 'Fermate'),
-              _navItem(2, Icons.swap_horiz_rounded, 'Percorsi'),
+              _navItem(0, Icons.home_rounded, context.l10n.navHome),
+              _navItem(1, Icons.place_outlined, context.l10n.navStops),
+              _navItem(2, Icons.swap_horiz_rounded, context.l10n.navRoutes),
               _moreItem(),
             ],
           ),
@@ -216,7 +276,7 @@ class MainShellState extends State<MainShell> {
               Icon(Icons.more_horiz, color: context.muted, size: 22),
               const SizedBox(height: 2),
               Text(
-                'Altro',
+                context.l10n.navMore,
                 style: TextStyle(
                   color: context.muted,
                   fontSize: 11,
