@@ -1,0 +1,15 @@
+<p><b>Bussolà</b> è un'app non ufficiale per consultare orari, passaggi e posizioni in tempo reale dei vaporetti e degli autobus ACTV di Venezia.</p>
+
+<p>Funzionalità principali:</p>
+<ul>
+<li>Passaggi in tempo reale per ogni fermata, con ricerca fuzzy e fermate vicine tramite geolocalizzazione</li>
+<li>Mappa live dei mezzi in circolazione</li>
+<li>Pianificazione del percorso tra due fermate</li>
+<li>Orari e varianti di tutte le linee, mappa dei percorsi</li>
+<li>Statistiche sui ritardi raccolte localmente sul dispositivo</li>
+<li>Fermate preferite e tema chiaro/scuro</li>
+</ul>
+
+<p>L'app è un progetto indipendente e non è affiliata ad ACTV S.p.A. né ad AVM/Comune di Venezia. I dati provengono da un server gestito dall'autore dell'app che aggrega le informazioni pubbliche dei servizi di navigazione e trasporto.</p>
+
+<p>Le mappe sono fornite da OpenStreetMap. Nessun tracciamento, nessuna pubblicità, nessun account richiesto.</p>

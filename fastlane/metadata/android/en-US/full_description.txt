@@ -1,0 +1,15 @@
+<p><b>Bussolà</b> is an unofficial app to browse schedules, real-time arrivals and live positions of ACTV water buses and buses in Venice, Italy.</p>
+
+<p>Main features:</p>
+<ul>
+<li>Real-time arrivals for every stop, with fuzzy search and nearby stops via geolocation</li>
+<li>Live map of vehicles currently in service</li>
+<li>Route planning between any two stops</li>
+<li>Schedules and route shapes for all lines</li>
+<li>Delay statistics collected locally on the device</li>
+<li>Favorite stops and light/dark theme</li>
+</ul>
+
+<p>This is an independent project and is not affiliated with ACTV S.p.A. or AVM/City of Venice. Data is provided by a server operated by the app's author that aggregates public transit information.</p>
+
+<p>Maps are provided by OpenStreetMap. No tracking, no ads, no account required.</p>

@@ -232,8 +232,13 @@ class StopsService {
         return null;
       }
       return await Geolocator.getCurrentPosition(
-        locationSettings:
-            const LocationSettings(accuracy: LocationAccuracy.medium),
+        // forceLocationManager: su Android usa LocationManager invece dei
+        // Google Play Services (necessario per il flavor F-Droid, innocuo
+        // altrove; i parametri Android-specific sono ignorati su altre OS).
+        locationSettings: AndroidSettings(
+          accuracy: LocationAccuracy.medium,
+          forceLocationManager: true,
+        ),
       );
     } catch (_) {
       return null;

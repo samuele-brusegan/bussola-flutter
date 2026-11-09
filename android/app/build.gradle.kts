@@ -25,8 +25,20 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
+    flavorDimensions += "store"
+    productFlavors {
+        create("store") {
+            dimension = "store"
+        }
+        // Flavor per F-Droid: compila senza le librerie non-FOSS di Google
+        // Play Services (geolocator usa LocationManager, vedi stops_service.dart).
+        create("fdroid") {
+            dimension = "store"
+            proguardFiles("proguard-fdroid.pro")
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "it.brusegan.bussola"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
@@ -62,6 +74,12 @@ android {
             }
         }
     }
+}
+
+// Nel flavor fdroid escludiamo l'intero gruppo com.google.android.gms dalle
+// dipendenze transitive (geolocator_android -> play-services-location).
+configurations.matching { it.name.startsWith("fdroid") }.configureEach {
+    exclude(group = "com.google.android.gms")
 }
 
 dependencies {

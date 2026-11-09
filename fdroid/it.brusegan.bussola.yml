@@ -1,0 +1,57 @@
+# Bozza di ricetta per F-Droid (da copiare in fdroiddata/metadata/
+# e adattare in fase di submission).
+#
+# Prerequisiti sul repo git:
+#   - tag "v1.0.0" sul commit della release
+#   - repo pubblico (es. https://github.com/samuele-brusegan/bussola-flutter)
+#
+# Note per i maintainer F-Droid:
+#   - il flavor Gradle "fdroid" esclude com.google.android.gms
+#     (geolocator ricade su android.location.LocationManager)
+#   - i font Inter sono bundled in assets/google_fonts, nessun fetch a runtime
+#   - le mappe usano tile.openstreetmap.org
+
+Categories:
+  - Navigation
+License: MIT
+AuthorName: samuele-brusegan
+SourceCode: https://github.com/samuele-brusegan/bussola-flutter
+IssueTracker: https://github.com/samuele-brusegan/bussola-flutter/issues
+Changelog: https://github.com/samuele-brusegan/bussola-flutter/releases
+
+AutoName: Bussolà
+
+RepoType: git
+Repo: https://github.com/samuele-brusegan/bussola-flutter
+
+Builds:
+  - versionName: 1.0.0
+    versionCode: 1
+    commit: v1.0.0
+    srclibs:
+      - flutter@3.47.7
+    rm:
+      - ios
+      - linux
+      - macos
+      - windows
+      - web
+      - build
+    prebuild:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - $$flutter$$/bin/flutter config --no-analytics
+      - $$flutter$$/bin/flutter pub get
+    scanignore:
+      - .pub-cache
+    scandelete:
+      - .pub-cache
+    build:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - $$flutter$$/bin/flutter build apk --release --flavor fdroid
+    output: build/app/outputs/flutter-apk/app-fdroid-release.apk
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+UpdateCheckData: pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
+CurrentVersion: 1.0.0
+CurrentVersionCode: 1
